@@ -4,6 +4,11 @@ import * as util from '/src/util.js';
  * TODO
  * polyfill/babel
  * convert Category to a class
+ * do words need categoryies?
+ * do they need to know if they're wild?
+ * should holding be limited to one word?
+ * if added words are wild, should they come out of a seperate deck, and the normal deck at the same time?
+ * I assume classes are hashable by default
  */
 
 const DEFAULT_NUM_CATEGORIES = 7;
