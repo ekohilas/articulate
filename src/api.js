@@ -1,3 +1,4 @@
+// I'm not sure how importing works or what is meant to be wrapped around in {}
 import util;
 
 const DEFAULT_NUM_CATEGORIES = 7;
