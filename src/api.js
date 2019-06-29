@@ -4,7 +4,6 @@ import * as util from '/src/util.js';
  * TODO
  * polyfill/babel
  * convert Category to a class
- * is it better for class functions to start with function?
  */
 
 const DEFAULT_NUM_CATEGORIES = 7;
@@ -47,10 +46,9 @@ export const DEFAULT_START_CATEGORY = Category.OBJECT;
 
 export class Word {
 	//TODO make hashable?
-	constructor(word, category, is_wild) {
+	constructor(word, category) {
 		this.word = word;
 		this.category = category;
-		this.is_wild = is_wild;
 	}
 }
 
@@ -66,9 +64,9 @@ export class Deck {
 			category = util.wild_category(Category);
 		}
 
-		const word = util.choice_from_set(this.unplayed[category]);
+		const word = util.choice_from_set(this.unplayed.get(category));
 
-		this.unplayed[category].delete(word);
+		this.unplayed.get(category).delete(word);
 
 		this.played.push(word);
 
@@ -84,14 +82,15 @@ export class Deck {
 			"random": Category.RANDOM,
 			"nature": Category.NATURE
 		}
-		console.log(Object.entries(object));
 		const unplayed = new Map();
-		for (let [category, words] of Object.entries(object)) {
-			console.log(category, words);
-			const category = to_category[category];
-			unplayed[category] = new Set(
-				words.map(
-					word => Word(word, category, false)  
+		for (const [category_str, words] of Object.entries(object)) {
+			const category = to_category[category_str];
+			unplayed.set(
+				category,
+				new Set(
+					words.map(
+						word => new Word(word, category)
+					)
 				)
 			)
 		}
@@ -116,7 +115,7 @@ export class Turn {
 	}
 
 	get wins() {
-		return this.words[WordStatus.PLAYED].length;
+		return this.words.get(WordStatus.PLAYED).length;
 	}
 
 	start() {
@@ -130,39 +129,41 @@ export class Turn {
 
 	_draw_and_hold() {
 		const word = this.deck.draw_from(this.category);
-		this.words[WordStatus.HOLDING].push(word);
+		this.words.get(WordStatus.HOLDING).push(word);
 	}
 
 	_move_word(from_status, to_status, word) {
-		// is this the right way to handle undefined arguments?
+		let temp_word = undefined;
 		if (word === undefined) {
-			const temp_word = this.words[from_status].shift();
+			temp_word = this.words.get(from_status).shift();
 		} else {
-			const index = this.words[from_status].indexOf(word); 
-			const temp_word = this.words[from_status].splice(index, 1);
+			const index = this.words.get(from_status).indexOf(word); 
+			temp_word = this.words.get(from_status).splice(index, 1);
 		}
-		this.words[to_status].push(temp_word);
+		this.words.get(to_status).push(temp_word);
 	}
 
 	_draw_word() {
 
+		console.log(this.words);
+
 		if (
 			this.status === PlayStatus.PREPARING 
-			&& this.words[WordStatus.HOLDING].length !== 0
+			&& this.words.get(WordStatus.HOLDING).length !== 0
 		) {
 			return;
 		}
 
 		if (
 			this.team.final_turn === true
-			&& this.words[WordStatus.HOLDING].length !== 0
+			&& this.words.get(WordStatus.HOLDING).length !== 0
 		) {
 			return;
 		}
 
 		const num_cards_held = (
-			this.words[WordStatus.DEFERED].length
-			+ this.words[WordStatus.HOLDING].length
+			this.words.get(WordStatus.DEFERED).length
+			+ this.words.get(WordStatus.HOLDING).length
 		);
 
 		if (num_cards_held === 0) {
@@ -209,7 +210,6 @@ export class Team {
 		this.final_turn = false;
 		this.turns = [];
 	}
-
 }
 
 export class Game {
@@ -241,6 +241,8 @@ export class Game {
 
 		this.loop();
 
+		this.end_game();
+
 	}
 
 	loop() {
@@ -250,11 +252,11 @@ export class Game {
 			// wait until ready
 			this.curr_turn.start();
 
-			let continue_turn = prompt("Enter to start", "");
-			while (continue_turn !== "") {
+			let continue_turn = prompt("Enter to start");
+			while (continue_turn !== null) {
 				console.log(this.curr_turn.words);
 
-				const option = prompt("Enter action (d/w/p): ", "");
+				const option = prompt("Enter action (d/w/p): ");
 				if (option == "d") {
 					this.curr_turn.discard_word();
 				} else if (option == "w") {
@@ -263,7 +265,7 @@ export class Game {
 					this.curr_turn.defer_word();
 				}
 
-				let continue_turn = prompt("Continue Turn? ", "");
+				continue_turn = prompt("Continue Turn? ");
 			}
 			this.curr_turn.end();
 
@@ -277,19 +279,17 @@ export class Game {
 
 			this.advance_turn();
 
-			this.end_game();
 		}
 	}
 
 	start_turn() {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = new Turn(
-			this.curr_turn_num,
 			this.curr_team,
 			this.curr_team.curr_category,
 			this.deck
 		);
-		this.turns.append(this.curr_turn);
+		this.turns.push(this.curr_turn);
 
 	}
 
@@ -301,7 +301,8 @@ export class Game {
 	}
 	
 	check_end_game() {
-		return this.curr_team.final_turn && this.curr_turn.wins;
+		return this.curr_turn_num === 2;
+		return this.curr_team.final_turn && this.curr_turn.wins > 0;
 	}
 
 	update_team() {
