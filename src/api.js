@@ -49,13 +49,16 @@ class Word {
 
 class Deck {
 	//TODO Can java make objects from objects?
-	constructor() {
-		this.unplayed = new Map([
-			/*
-			[c, new Set([])]
-			for c in Category
-			*/
-		]);
+	constructor(unplayed) {
+		/*
+		this.unplayed = new Map(
+			[
+				for (category of Object.keys(Category))
+				[c, new Set()]
+			]
+		);
+		*/
+		this.unplayed = unplayed;
 		this.played = [];
 	}
 
@@ -85,19 +88,22 @@ class Deck {
 		unplayed = Map();
 		for (const [category, words] of Object.entries(object)) {
 			const category = to_category[category];
-			/*
 			unplayed[category] = Set(
+				/* Can I do this?
 				Word(
 					word=word,
 					category=category,
 					is_wild=false,
 				)
-				for word in words
+				*/
+				[
+					for (word of words)
+					Word(word, category, false)
+				]
 			)
-			*/
 		}
 
-		//return cls(unplayed);
+		return new this(unplayed);
 
 	}
 
@@ -108,12 +114,12 @@ class Turn {
 		this.team = team;
 		this.category = category;
 		this.deck = deck;
-		this.words = new Map([
-			/*
-			[status, []]
-			for status in WordStatus
-			*/
-		]);
+		this.words = new Map(
+			[
+				for (status of WordStatus)
+				[status, []]
+			]
+		);
 		this.status = PlayStatus.PREPARING;
 		this._draw_word();
 	}
@@ -129,7 +135,6 @@ class Turn {
 
 	end() {
 		this.status = PlayStatus.ENDED;
-		// Timer Start
 	}
 
 	_draw_and_hold() {
