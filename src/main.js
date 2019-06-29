@@ -2,6 +2,7 @@ import api;
 
 function import_deck() {
 	/*
+	 * How to import file as json?
     with open("categories.json") as f:
         json_deck = json.load(f)
     return Deck.from_json(json_deck)
@@ -11,7 +12,8 @@ function import_deck() {
 function create_teams() {
 	const num_teams = parseInt(prompt("How many teams?: ", ""));
 	let teams = [];
-	for (let i = 0; i < num_teams; i++) {
+	// is does something like a range iterator exist?
+	for (let _ = 0; _ < num_teams; _++) {
 		const name = prompt("Enter Team name: ", "");
 		teams.push(api.Team(name, Color.RED));
 	}

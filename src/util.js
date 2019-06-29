@@ -3,7 +3,7 @@ function random_choice(array) {
 }
 
 function wild_category(Category) {
-	let keys = Object.keys(Category);
+	const keys = Object.keys(Category);
 	keys.splice(Category.WILD, 1);
 	return Category[random_choice(keys)];  
 };

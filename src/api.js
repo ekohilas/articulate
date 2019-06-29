@@ -48,7 +48,7 @@ class Word {
 }
 
 class Deck {
-	//TODO Can java make objects from objects?
+
 	constructor(unplayed) {
 		/*
 		this.unplayed = new Map(
@@ -86,23 +86,24 @@ class Deck {
 			"nature": Category.NATURE,
 		}
 		unplayed = Map();
+		// how to polyfill for compatibility?
 		for (const [category, words] of Object.entries(object)) {
 			const category = to_category[category];
 			unplayed[category] = Set(
-				/* Can I do this?
+				/* do named arguments exist? 
 				Word(
 					word=word,
 					category=category,
 					is_wild=false,
 				)
 				*/
-				[
-					for (word of words)
-					Word(word, category, false)
-				]
+				words.map(
+					word => Word(word, category, false)  
+				)
 			)
 		}
 
+		// is this how you make a class method?
 		return new this(unplayed);
 
 	}
@@ -115,10 +116,8 @@ class Turn {
 		this.category = category;
 		this.deck = deck;
 		this.words = new Map(
-			[
-				for (status of WordStatus)
-				[status, []]
-			]
+			// Is there a better way of doing this?
+			Object.values(WordStatus).map(status => [status, []])
 		);
 		this.status = PlayStatus.PREPARING;
 		this._draw_word();
@@ -143,6 +142,7 @@ class Turn {
 	}
 
 	_move_word(from_status, to_status, word) {
+		// is this the right way to handle undefined arguments?
 		if (word === undefined) {
 			const temp_word = this.words[from_status].shift();
 		} else {
@@ -286,6 +286,7 @@ class Game {
 	start_turn() {
 		this.curr_team = this.teams[this.curr_turn_num % len(this.teams)];
 		this.curr_turn = Turn(
+			// Again
 			num=this.curr_turn_num,
 			team=this.curr_team,
 			category=this.curr_team.curr_category,
@@ -304,7 +305,6 @@ class Game {
 	
 	check_end_game() {
 		return this.curr_team.final_turn && this.curr_turn.wins;
-
 	}
 
 	update_team() {
