@@ -1,12 +1,9 @@
-import api;
+import * as api from '/src/api.js';
 
-function import_deck() {
-	/*
-	 * How to import file as json?
-    with open("categories.json") as f:
-        json_deck = json.load(f)
-    return Deck.from_json(json_deck)
-    */
+function import_deck(json_deck) {
+
+	console.log(json_deck)
+	//return Deck.from_json(json_deck)
 }
 
 function create_teams() {
@@ -15,17 +12,23 @@ function create_teams() {
 	// is does something like a range iterator exist?
 	for (let _ = 0; _ < num_teams; _++) {
 		const name = prompt("Enter Team name: ", "");
-		teams.push(api.Team(name, Color.RED));
+		teams.push(new api.Team(name, api.Color.RED));
 	}
 	return teams;
 }
 
-function main() {
-	const deck = import_deck();
+function main(json_deck) {
+	const deck = import_deck(json_deck);
 	const teams = create_teams();
 
-	const game = api.Game(deck, teams);
+	const game = new api.Game(teams, deck);
 
 	game.start();
 
+}
+
+window.onload = function() {
+	fetch("/static/words.json")
+		.then(r => r.json())
+		.then(j => main(j))
 }

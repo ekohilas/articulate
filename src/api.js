@@ -1,5 +1,5 @@
 // I'm not sure how importing works or what is meant to be wrapped around in {}
-import util;
+import * as util from '/src/util.js';
 
 const DEFAULT_NUM_CATEGORIES = 7;
 const DEFAULT_MAX_CYCLES = 6;
@@ -7,27 +7,27 @@ const DEFAULT_MAX_HELD = 2;
 const DEFAULT_MAX_TEAMS = 4;
 const DEFAULT_TIMER_SECONDS = 120;
 
-const Color = {
+export const Color = {
 	RED: "#ff0000",
 	YELLOW: "#ffff00",
 	GREEN: "#00ff00",
 	BLUE: "#0000ff"
 }
 
-const WordStatus = {
+export const WordStatus = {
 	HOLDING: 0,
 	DEFERED: 1,
 	PLAYED: 2,
 	DISCARDED: 3
 }
 
-const PlayStatus = {
+export const PlayStatus = {
 	PREPARING: 0,
 	PLAYING: 1,
 	ENDED: 2
 }
 
-const Category = {
+export const Category = {
 	OBJECT: 0,  
 	ACTION: 1, 
 	WILD  : 2,
@@ -37,9 +37,9 @@ const Category = {
 	NATURE: 6
 }
 
-const DEFAULT_START_CATEGORY = Category.OBJECT;
+export const DEFAULT_START_CATEGORY = Category.OBJECT;
 
-class Word {
+export class Word {
 	//TODO make hashable?
 	constructor(word, category, is_wild) {
 		this.word = word;
@@ -48,7 +48,7 @@ class Word {
 	}
 }
 
-class Deck {
+export class Deck {
 
 	constructor(unplayed) {
 		/*
@@ -111,7 +111,7 @@ class Deck {
 
 }
 
-class Turn {
+export class Turn {
 	constructor(team, category, deck) {
 		this.team = team;
 		this.category = category;
@@ -209,7 +209,7 @@ class Turn {
 	}
 }
 
-class Team {
+export class Team {
 	constructor(name, color) {
 		this.name = name;
 		this.color = color;
@@ -221,7 +221,7 @@ class Team {
 
 }
 
-class Game {
+export class Game {
 
 	constructor(teams, deck) {
 		this.teams = teams;
@@ -285,7 +285,7 @@ class Game {
 	}
 
 	start_turn() {
-		this.curr_team = this.teams[this.curr_turn_num % len(this.teams)];
+		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = Turn(
 			// Again
 			num=this.curr_turn_num,
