@@ -1,5 +1,11 @@
-// I'm not sure how importing works or what is meant to be wrapped around in {}
 import * as util from '/src/util.js';
+
+/*
+ * TODO
+ * polyfill/babel
+ * convert Category to a class
+ * is it better for class functions to start with function?
+ */
 
 const DEFAULT_NUM_CATEGORIES = 7;
 const DEFAULT_MAX_CYCLES = 6;
@@ -51,14 +57,6 @@ export class Word {
 export class Deck {
 
 	constructor(unplayed) {
-		/*
-		this.unplayed = new Map(
-			[
-				for (category of Object.keys(Category))
-				[c, new Set()]
-			]
-		);
-		*/
 		this.unplayed = unplayed;
 		this.played = [];
 	}
@@ -84,20 +82,14 @@ export class Deck {
 			"world": Category.WORLD,
 			"person": Category.PERSON,
 			"random": Category.RANDOM,
-			"nature": Category.NATURE,
+			"nature": Category.NATURE
 		}
-		unplayed = Map();
-		// how to polyfill for compatibility?
-		for (const [category, words] of Object.entries(object)) {
+		console.log(Object.entries(object));
+		const unplayed = new Map();
+		for (let [category, words] of Object.entries(object)) {
+			console.log(category, words);
 			const category = to_category[category];
-			unplayed[category] = Set(
-				/* do named arguments exist? 
-				Word(
-					word=word,
-					category=category,
-					is_wild=false,
-				)
-				*/
+			unplayed[category] = new Set(
 				words.map(
 					word => Word(word, category, false)  
 				)
@@ -117,7 +109,6 @@ export class Turn {
 		this.category = category;
 		this.deck = deck;
 		this.words = new Map(
-			// Is there a better way of doing this?
 			Object.values(WordStatus).map(status => [status, []])
 		);
 		this.status = PlayStatus.PREPARING;
@@ -223,13 +214,19 @@ export class Team {
 
 export class Game {
 
-	constructor(teams, deck) {
+	constructor(
+		teams, 
+		deck, 
+		num_categories = DEFAULT_NUM_CATEGORIES,
+		max_cycles = DEFAULT_MAX_CYCLES,
+		max_held = DEFAULT_MAX_HELD
+	) {
 		this.teams = teams;
 		this.deck = deck;
+		this.num_categories = num_categories;
+		this.max_cycles = max_cycles;
+		this.max_held = max_held;
 		this.turns = [];
-		this.num_categories = DEFAULT_NUM_CATEGORIES;
-		this.max_cycles = DEFAULT_MAX_CYCLES;
-		this.max_held = DEFAULT_MAX_HELD;
 		this.curr_team = undefined;
 		this.curr_turn = undefined;
 		this.curr_turn_num = 0;
@@ -286,12 +283,11 @@ export class Game {
 
 	start_turn() {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
-		this.curr_turn = Turn(
-			// Again
-			num=this.curr_turn_num,
-			team=this.curr_team,
-			category=this.curr_team.curr_category,
-			deck=this.deck
+		this.curr_turn = new Turn(
+			this.curr_turn_num,
+			this.curr_team,
+			this.curr_team.curr_category,
+			this.deck
 		);
 		this.turns.append(this.curr_turn);
 
@@ -309,7 +305,7 @@ export class Game {
 	}
 
 	update_team() {
-		this.curr_team.curr_category = Category(this.curr_team.total_wins % this.num_categories);
+		this.curr_team.curr_category = Object.values(Category)[this.curr_team.total_wins % this.num_categories];
 
 		if (Math.floor(this.curr_team.total_wins / this.num_categories) >= this.max_cycles) {
 			this.curr_team.final_turn = true;
@@ -322,7 +318,7 @@ export class Game {
 	}
 
 	end_game() {
-		return console.log(this.curr_team.name + " won!");
+		console.log(this.curr_team.name + " won!");
 	}
 }
 
