@@ -27,6 +27,19 @@ function create_teams() {
 	return teams;
 }
 
+function update_timer(game) {
+	let timer = document.getElementById("timer");
+	let button = document.getElementById("start");
+	//console.log(game.turn_timer);
+	// TODO 
+	if (game.turn_timer == 120) {
+		button.style.display = "inline";
+	} else {
+		button.style.display = "none";
+	}
+	timer.innerText = game.turn_timer;
+}
+
 
 function main(json_deck) {
 
@@ -36,18 +49,26 @@ function main(json_deck) {
 	const game = new api.Game(teams, deck);
 
 	let button = document.getElementById("discard");
-	button.onclick = game.discard_word;
+	button.addEventListener('click', function() { game.discard_word() });
 
 	button = document.getElementById("win");
-	button.onclick = game.win_word;
+	button.addEventListener('click', function() { game.win_word() });
 
 	button = document.getElementById("defer");
-	button.onclick = game.defer_word;
+	button.addEventListener('click', function() { game.defer_word() });
 
 	button = document.getElementById("start");
-	button.onclick = game.start_turn;
+	button.addEventListener('click', function() { game.start_turn() });
+
+	button = document.getElementById("end");
+	button.addEventListener('click', function() { game.end_turn() });
+
+	// TODO
+	let interval = window.setInterval(function() {update_timer(game)}, 100);
+	//window.requestAnimationFrame(function() {update_timer(game)});
 
 	game.start();
+
 
 }
 

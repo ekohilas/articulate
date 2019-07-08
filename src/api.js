@@ -9,10 +9,11 @@ import * as util from '/src/util.js';
  * should holding be limited to one word?
  * if added words are wild, should they come out of a seperate deck, and the normal deck at the same time?
  * I assume classes are hashable by default
+ * Add sanity checks
  */
 
 const DEFAULT_NUM_CATEGORIES = 7;
-const DEFAULT_MAX_CYCLES = 6;
+const DEFAULT_MAX_CYCLES = 1;//6
 const DEFAULT_MAX_HELD = 2;
 const DEFAULT_MAX_TEAMS = 4;
 const DEFAULT_TIMER_SECONDS = 120;
@@ -117,6 +118,7 @@ export class Turn {
 			Object.values(WordStatus).map(status => [status, []])
 		);
 		this.status = PlayStatus.PREPARING;
+		this.timer = DEFAULT_TIMER_SECONDS; 
 		this._draw_word();
 	}
 
@@ -142,8 +144,6 @@ export class Turn {
 	}
 
 	_draw_word() {
-
-		console.log(this.words);
 
 		if (
 			this.status === PlayStatus.PREPARING 
@@ -189,7 +189,7 @@ export class Turn {
 		this._release_and_draw(WordStatus.PLAYED, word);
 
 		if (this.team.final_turn === true) {
-			this.end();
+			this.timer = 0;
 		}
 
 	}
@@ -228,6 +228,7 @@ export class Game {
 		this.curr_team = undefined;
 		this.curr_turn = undefined;
 		this.curr_turn_num = 0;
+		this.interval = undefined;
 	}
 
 	start(ordered) {
@@ -247,66 +248,88 @@ export class Game {
 
 	}
 
+	get turn_timer() {
+		return this.curr_turn.timer;
+	}
+
 	init_turn() {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = new Turn(
 			this.curr_team,
-			this.curr_team.curr_category,
+			((this.curr_team.final_turn === true) ? Category.WILD : this.curr_team.curr_category),
 			this.deck
 		);
 		this.turns.push(this.curr_turn);
-
+		this.show_words();
 	}
 
 	show_words() {
 		let cards = document.getElementById("words");
 		let node = document.createElement("p");
-		node.innerText = JSON.stringify(this.curr_turn.words);
+		node.innerText = JSON.stringify(Array.from(this.curr_turn.words));
 		cards.appendChild(node);
+	}
+
+	tick_timer() {
+		if (this.curr_turn.timer > 0) {
+			this.curr_turn.timer--;
+		} else {
+			window.clearInterval(this.interval);
+			this.end_turn();
+		}
+
 	}
 
 	start_turn() {
 		this.curr_turn.status = PlayStatus.PLAYING;
-		window.setInterval(this.end, DEFAULT_TIMER_SECONDS * SECOND_IN_MILLISECONDS);
+		this.interval = window.setInterval( () => this.tick_timer() , 1 * SECOND_IN_MILLISECONDS);
+		//this.interval = window.setInterval(function() { this.tick_timer.bind(this) }, 1 * SECOND_IN_MILLISECONDS);
+		//window.setInterval(this.end, DEFAULT_TIMER_SECONDS * SECOND_IN_MILLISECONDS);
 	}
 
 	end_turn() {
+		console.log("Times up!");
+		this.curr_turn.timer = 0;
 		this.curr_turn.status = PlayStatus.ENDED;
 		this.update_team_wins();
 
 		if (this.check_end_game() === true) {
-			this.end_game()
+			this.end_game();
+		} else {
+
+			this.update_team();
+
+			this.advance_turn();
+
+			this.init_turn();
 		}
-
-		this.update_team();
-
-		this.advance_turn();
-
-		this.init_turn();
 
 	}
 
 	discard_word() {
 		this.curr_turn.discard_word();
+		this.show_words();
 	}
 
 	win_word() {
 		this.curr_turn.win_word();
+		this.show_words();
 	}
 
 	defer_word() {
 		this.curr_turn.defer_word();
+		this.show_words();
 	}
 
 	update_team_wins() {
 		const wins = this.curr_turn.wins;
-		console.log(wins);
+		console.log(`${this.curr_team.name} scored ${wins}`);
 		this.curr_team.total_wins += wins;
 
 	}
 	
+	// TODO test end final turn
 	check_end_game() {
-		return this.curr_turn_num === 2;
 		return this.curr_team.final_turn && this.curr_turn.wins > 0;
 	}
 
