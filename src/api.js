@@ -16,6 +16,7 @@ const DEFAULT_MAX_CYCLES = 6;
 const DEFAULT_MAX_HELD = 2;
 const DEFAULT_MAX_TEAMS = 4;
 const DEFAULT_TIMER_SECONDS = 120;
+const SECOND_IN_MILLISECONDS = 1000;
 
 export const Color = {
 	RED: "#ff0000",
@@ -123,14 +124,6 @@ export class Turn {
 		return this.words.get(WordStatus.PLAYED).length;
 	}
 
-	start() {
-		this.status = PlayStatus.PLAYING;
-		// Timer Start
-	}
-
-	end() {
-		this.status = PlayStatus.ENDED;
-	}
 
 	_draw_and_hold() {
 		const word = this.deck.draw_from(this.category);
@@ -244,50 +237,17 @@ export class Game {
 
 		//this.set_team_numbers();
 
-		this.loop();
+		this.init_turn();
+		// wait until ready
 
-		this.end_game();
+		// this should be abstracted as a game function that is calle from the top level
+		// first continue should be a function to start
+		// then at the end of the timer iniate the end functions
+		// there shouldn't be a while true llop here 
 
 	}
 
-	loop() {
-		while (true) {
-
-			this.start_turn();
-			// wait until ready
-			this.curr_turn.start();
-
-			let continue_turn = prompt("Enter to start");
-			while (continue_turn !== null) {
-				console.log(this.curr_turn.words);
-
-				const option = prompt("Enter action (d/w/p): ");
-				if (option == "d") {
-					this.curr_turn.discard_word();
-				} else if (option == "w") {
-					this.curr_turn.win_word();
-				} else if (option == "p") {
-					this.curr_turn.defer_word();
-				}
-
-				continue_turn = prompt("Continue Turn? ");
-			}
-			this.curr_turn.end();
-
-			this.update_team_wins();
-
-			if (this.check_end_game() === true) {
-				break;
-			}
-
-			this.update_team();
-
-			this.advance_turn();
-
-		}
-	}
-
-	start_turn() {
+	init_turn() {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = new Turn(
 			this.curr_team,
@@ -296,6 +256,46 @@ export class Game {
 		);
 		this.turns.push(this.curr_turn);
 
+	}
+
+	show_words() {
+		let cards = document.getElementById("words");
+		let node = document.createElement("p");
+		node.innerText = JSON.stringify(this.curr_turn.words);
+		cards.appendChild(node);
+	}
+
+	start_turn() {
+		this.curr_turn.status = PlayStatus.PLAYING;
+		window.setInterval(this.end, DEFAULT_TIMER_SECONDS * SECOND_IN_MILLISECONDS);
+	}
+
+	end_turn() {
+		this.curr_turn.status = PlayStatus.ENDED;
+		this.update_team_wins();
+
+		if (this.check_end_game() === true) {
+			this.end_game()
+		}
+
+		this.update_team();
+
+		this.advance_turn();
+
+		this.init_turn();
+
+	}
+
+	discard_word() {
+		this.curr_turn.discard_word();
+	}
+
+	win_word() {
+		this.curr_turn.win_word();
+	}
+
+	defer_word() {
+		this.curr_turn.defer_word();
 	}
 
 	update_team_wins() {
