@@ -200,6 +200,7 @@ export class Turn {
 }
 
 export class Team {
+
 	constructor(name, color) {
 		this.name = name;
 		this.color = color;
@@ -208,6 +209,7 @@ export class Team {
 		this.final_turn = false;
 		this.turns = [];
 	}
+
 }
 
 export class Game {
@@ -266,8 +268,12 @@ export class Game {
 	show_words() {
 		let cards = document.getElementById("words");
 		let node = document.createElement("p");
-		node.innerText = JSON.stringify(Array.from(this.curr_turn.words));
-		cards.appendChild(node);
+		node.innerText = JSON.stringify(
+			util.map_to_object(this.curr_turn.words),
+			null,
+			1
+		);
+		cards.prepend(node);
 	}
 
 	tick_timer() {

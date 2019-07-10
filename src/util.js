@@ -19,3 +19,11 @@ export function shuffle(array) {
 	}
 	return array;
 };
+
+export function map_to_object(map) {
+	const obj = {};
+	for (const [key, value] of map) {
+		obj[key] = value;
+	}
+	return obj;
+};

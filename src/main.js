@@ -27,7 +27,7 @@ function create_teams() {
 	return teams;
 }
 
-function update_timer(game) {
+function update_screen(game) {
 	let timer = document.getElementById("timer");
 	let button = document.getElementById("start");
 	//console.log(game.turn_timer);
@@ -38,6 +38,14 @@ function update_timer(game) {
 		button.style.display = "none";
 	}
 	timer.innerText = game.turn_timer;
+
+	let teams = document.getElementById("teams");
+	teams.innerHTML = "";
+	for (const team of game.teams) {
+		let node = document.createElement("p");
+		node.innerText = JSON.stringify(team, null, 1);
+		teams.appendChild(node);
+	}	
 }
 
 
@@ -64,7 +72,7 @@ function main(json_deck) {
 	button.addEventListener('click', function() { game.end_turn() });
 
 	// TODO
-	let interval = window.setInterval(function() {update_timer(game)}, 100);
+	let interval = window.setInterval(function() {update_screen(game)}, 100);
 	//window.requestAnimationFrame(function() {update_timer(game)});
 
 	game.start();
