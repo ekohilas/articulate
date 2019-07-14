@@ -53,6 +53,32 @@ export const Category = {
 	NATURE: 6
 }
 
+export class Category {
+	constructor(name, position, color, image, is_wild) {
+		this.name = name.toLowerCase();
+		this.position = position;
+		this.color = color;
+		this.image = image;
+		// probably don't nede this
+		this.is_wild = is_wild;
+	}
+}
+
+export class Categories {
+
+	constructor() {
+
+	}
+
+	wild() {
+
+	}
+
+	get(i) {
+		return [i];
+	}
+}
+
 export const DEFAULT_START_CATEGORY = Category.OBJECT;
 
 export class Word {
