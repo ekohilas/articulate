@@ -27,3 +27,18 @@ export function map_to_object(map) {
 	}
 	return obj;
 };
+
+export function create_table(rows, columns) {
+	const table = document.createElement('table');
+	const tbody = document.createElement('tbody');
+	for (let i = 0; i < rows; i++) {
+		const tr = document.createElement('tr');
+		for (let j = 0; j < columns; j++) {
+			const td = document.createElement('td');
+			tr.appendChild(td);
+		}
+		tbody.appendChild(tr);
+	}
+	table.appendChild(tbody);
+	return table;
+}

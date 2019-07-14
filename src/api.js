@@ -39,6 +39,10 @@ export const PlayStatus = {
 	ENDED: 2
 }
 
+// TODO Make catageory a calss instead?
+// Caategories need pictures/colour
+// the board is different from a cateogry
+// what should we really consider when we allow unkown categories?
 export const Category = {
 	OBJECT: 0,  
 	ACTION: 1, 
@@ -56,6 +60,17 @@ export class Word {
 	constructor(word, category) {
 		this.word = word;
 		this.category = category;
+	}
+}
+
+export class Team {
+	constructor(name, color) {
+		this.name = name;
+		this.color = color;
+		this.curr_category = DEFAULT_START_CATEGORY;
+		this.total_wins = 0;
+		this.final_turn = false;
+		this.turns = [];
 	}
 }
 
@@ -102,7 +117,6 @@ export class Deck {
 			)
 		}
 
-		// is this how you make a class method?
 		return new this(unplayed);
 
 	}
@@ -199,18 +213,6 @@ export class Turn {
 	}
 }
 
-export class Team {
-
-	constructor(name, color) {
-		this.name = name;
-		this.color = color;
-		this.curr_category = DEFAULT_START_CATEGORY;
-		this.total_wins = 0;
-		this.final_turn = false;
-		this.turns = [];
-	}
-
-}
 
 export class Game {
 
@@ -227,27 +229,18 @@ export class Game {
 		this.max_cycles = max_cycles;
 		this.max_held = max_held;
 		this.turns = [];
+		this.curr_turn_num = 0;
 		this.curr_team = undefined;
 		this.curr_turn = undefined;
-		this.curr_turn_num = 0;
 		this.interval = undefined;
 	}
 
 	start(ordered) {
+		// Probably don't need this practically
 		if (ordered === false) {
 			util.shuffle(this.teams);
 		}
-
-		//this.set_team_numbers();
-
 		this.init_turn();
-		// wait until ready
-
-		// this should be abstracted as a game function that is calle from the top level
-		// first continue should be a function to start
-		// then at the end of the timer iniate the end functions
-		// there shouldn't be a while true llop here 
-
 	}
 
 	get turn_timer() {
@@ -258,7 +251,10 @@ export class Game {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = new Turn(
 			this.curr_team,
-			((this.curr_team.final_turn === true) ? Category.WILD : this.curr_team.curr_category),
+			(
+				(this.curr_team.final_turn === true) ? 
+				Category.WILD : this.curr_team.curr_category
+			),
 			this.deck
 		);
 		this.turns.push(this.curr_turn);
@@ -302,11 +298,8 @@ export class Game {
 		if (this.check_end_game() === true) {
 			this.end_game();
 		} else {
-
 			this.update_team();
-
 			this.advance_turn();
-
 			this.init_turn();
 		}
 
@@ -340,12 +333,20 @@ export class Game {
 	}
 
 	update_team() {
-		this.curr_team.curr_category = Object.values(Category)[this.curr_team.total_wins % this.num_categories];
+		this.curr_team.curr_category = this.calculate_category(this.curr_team.wins);
 
-		if (Math.floor(this.curr_team.total_wins / this.num_categories) >= this.max_cycles) {
+		if (this.calculate_cycle(this.curr_team.wins) >= this.max_cycles) {
 			this.curr_team.final_turn = true;
 			this.curr_team.curr_category = Category.WILD;
 		}
+	}
+
+	calculate_category(total_wins) {
+		return Object.values(Category)[total_wins % this.num_categories];
+	}
+
+	calculate_cycle(total_wins) {
+		return Math.floor(total_wins / this.num_categories);
 	}
 
 	advance_turn() {
@@ -355,7 +356,13 @@ export class Game {
 	end_game() {
 		console.log(this.curr_team.name + " won!");
 	}
+
+	create_category_table() {
+		return util.create_table(this.teams.length, this.num_categories);
+	}
+
+	create_position_table() {
+		return util.create_table(this.teams.length, this.max_cycles);
+	}
+	
 }
-
-
-

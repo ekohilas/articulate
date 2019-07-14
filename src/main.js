@@ -1,4 +1,5 @@
 import * as api from '/src/api.js';
+import * as ui from '/src/ui.js';
 
 /*
  * TODO
@@ -20,34 +21,12 @@ function import_deck(json_deck) {
 function create_teams() {
 	const num_teams = parseInt(prompt("How many teams?: ", ""));
 	let teams = [];
-	for (let _ = 0; _ < num_teams; _++) {
+	for (let i = 0; i < num_teams; i++) {
 		const name = prompt("Enter Team name: ", "");
-		teams.push(new api.Team(name, api.Color.RED));
+		teams.push(new api.Team(name, Object.values(api.Color)[i]));
 	}
 	return teams;
 }
-
-function update_screen(game) {
-	let timer = document.getElementById("timer");
-	let button = document.getElementById("start");
-	//console.log(game.turn_timer);
-	// TODO 
-	if (game.turn_timer == 120) {
-		button.style.display = "inline";
-	} else {
-		button.style.display = "none";
-	}
-	timer.innerText = game.turn_timer;
-
-	let teams = document.getElementById("teams");
-	teams.innerHTML = "";
-	for (const team of game.teams) {
-		let node = document.createElement("p");
-		node.innerText = JSON.stringify(team, null, 1);
-		teams.appendChild(node);
-	}	
-}
-
 
 function main(json_deck) {
 
@@ -72,8 +51,16 @@ function main(json_deck) {
 	button.addEventListener('click', function() { game.end_turn() });
 
 	// TODO
-	let interval = window.setInterval(function() {update_screen(game)}, 100);
+	const interval = window.setInterval(function() {ui.update_screen(game)}, 100);
 	//window.requestAnimationFrame(function() {update_timer(game)});
+	
+	const category = document.getElementById('category');   
+	const board = new ui.Board(game);
+	category.appendChild(board.create_layout());
+	//category.appendChild(game.create_category_table());
+
+	//const position = document.getElementById('position');   
+	//position.appendChild(game.create_position_table());
 
 	game.start();
 
