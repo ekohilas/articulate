@@ -43,6 +43,7 @@ export const PlayStatus = {
 // Caategories need pictures/colour
 // the board is different from a cateogry
 // what should we really consider when we allow unkown categories?
+/*
 export const Category = {
 	OBJECT: 0,  
 	ACTION: 1, 
@@ -52,14 +53,13 @@ export const Category = {
 	RANDOM: 5, 
 	NATURE: 6
 }
+*/
 
 export class Category {
-	constructor(name, position, color, image, is_wild) {
+	constructor(name, color, image, is_wild) {
 		this.name = name.toLowerCase();
-		this.position = position;
 		this.color = color;
 		this.image = image;
-		// probably don't nede this
 		this.is_wild = is_wild;
 	}
 }
@@ -79,8 +79,6 @@ export class Categories {
 	}
 }
 
-export const DEFAULT_START_CATEGORY = Category.OBJECT;
-
 export class Word {
 	//TODO make hashable?
 	constructor(word, category) {
@@ -93,7 +91,7 @@ export class Team {
 	constructor(name, color) {
 		this.name = name;
 		this.color = color;
-		this.curr_category = DEFAULT_START_CATEGORY;
+		this.curr_category = undefined; 
 		this.total_wins = 0;
 		this.final_turn = false;
 		this.turns = [];
@@ -107,9 +105,9 @@ export class Deck {
 		this.played = [];
 	}
 
-	draw_from(category) {
-		if (category == Category.WILD) {
-			category = util.wild_category(Category);
+	draw_from(category, categories) {
+		if (category.is_wild === true) {
+			category = util.random_choice(categories);
 		}
 
 		const word = util.choice_from_set(this.unplayed.get(category));
@@ -121,36 +119,11 @@ export class Deck {
 		return word;
 	}
 
-	static from_json(object) {
-		const to_category = {
-			"object": Category.OBJECT,
-			"action": Category.ACTION,
-			"world": Category.WORLD,
-			"person": Category.PERSON,
-			"random": Category.RANDOM,
-			"nature": Category.NATURE
-		}
-		const unplayed = new Map();
-		for (const [category_str, words] of Object.entries(object)) {
-			const category = to_category[category_str];
-			unplayed.set(
-				category,
-				new Set(
-					words.map(
-						word => new Word(word, category)
-					)
-				)
-			)
-		}
-
-		return new this(unplayed);
-
-	}
 
 }
 
 export class Turn {
-	constructor(team, category, deck) {
+	constructor(team, category, deck, categories) {
 		this.team = team;
 		this.category = category;
 		this.deck = deck;
@@ -159,6 +132,8 @@ export class Turn {
 		);
 		this.status = PlayStatus.PREPARING;
 		this.timer = DEFAULT_TIMER_SECONDS; 
+		this.categories = categories;
+
 		this._draw_word();
 	}
 
@@ -168,7 +143,7 @@ export class Turn {
 
 
 	_draw_and_hold() {
-		const word = this.deck.draw_from(this.category);
+		const word = this.deck.draw_from(this.category, this.categories);
 		this.words.get(WordStatus.HOLDING).push(word);
 	}
 
@@ -244,14 +219,11 @@ export class Game {
 
 	constructor(
 		teams, 
-		deck, 
-		num_categories = DEFAULT_NUM_CATEGORIES,
+		object, 
 		max_cycles = DEFAULT_MAX_CYCLES,
 		max_held = DEFAULT_MAX_HELD
 	) {
 		this.teams = teams;
-		this.deck = deck;
-		this.num_categories = num_categories;
 		this.max_cycles = max_cycles;
 		this.max_held = max_held;
 		this.turns = [];
@@ -259,12 +231,67 @@ export class Game {
 		this.curr_team = undefined;
 		this.curr_turn = undefined;
 		this.interval = undefined;
+
+		this.import_json(object);
+		this.arrange_segments(2);
+	}
+
+	import_words(object) {
+		const unplayed = new Map();
+
+		for (const category_key of Object.keys(object)) {
+
+			let category = this.categories_map.get(category_key);
+
+			unplayed.set(
+				category,
+				new Set(
+					object[category_key].map(
+						word => new Word(word, category)
+					)
+				)
+			)
+		}
+
+		this.deck = new Deck(unplayed);
+	}
+
+	import_categories(object) {
+
+		this.categories = [];
+		this.categories_map = new Map();
+
+		for (const category_key of Object.keys(object)) {
+			let category = new Category(category_key);
+			// more logic for other data
+			this.categories_map.set(category_key, category);
+			this.categories.push(category);
+		}
+
+		// hard coded for wild
+		this.wild_category = new Category("wild", undefined, undefined, true);
+
+	}
+
+	import_json(object) {
+		this.import_categories(object);
+		this.import_words(object);
+	}
+
+	arrange_segments(wild_position) {
+		this.segments = this.categories;
+		if (wild_position !== undefined) {
+			this.segments.splice(wild_position, 0, this.wild_category);
+		}
 	}
 
 	start(ordered) {
 		// Probably don't need this practically
 		if (ordered === false) {
 			util.shuffle(this.teams);
+		}
+		for (const team of this.teams) {
+			team.curr_category = this.segments[0];
 		}
 		this.init_turn();
 	}
@@ -277,11 +304,13 @@ export class Game {
 		this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
 		this.curr_turn = new Turn(
 			this.curr_team,
+			//redundant?
 			(
 				(this.curr_team.final_turn === true) ? 
-				Category.WILD : this.curr_team.curr_category
+				this.wild_category : this.curr_team.curr_category
 			),
-			this.deck
+			this.deck,
+			this.categories
 		);
 		this.turns.push(this.curr_turn);
 		this.show_words();
@@ -359,20 +388,20 @@ export class Game {
 	}
 
 	update_team() {
-		this.curr_team.curr_category = this.calculate_category(this.curr_team.wins);
+		this.curr_team.curr_category = this.calculate_category(this.curr_team.total_wins);
 
 		if (this.calculate_cycle(this.curr_team.wins) >= this.max_cycles) {
 			this.curr_team.final_turn = true;
-			this.curr_team.curr_category = Category.WILD;
+			this.curr_team.curr_category = this.wild_category;
 		}
 	}
 
 	calculate_category(total_wins) {
-		return Object.values(Category)[total_wins % this.num_categories];
+		return this.segments[total_wins % this.segments.length];
 	}
 
 	calculate_cycle(total_wins) {
-		return Math.floor(total_wins / this.num_categories);
+		return Math.floor(total_wins / this.segments.length);
 	}
 
 	advance_turn() {
@@ -384,7 +413,7 @@ export class Game {
 	}
 
 	create_category_table() {
-		return util.create_table(this.teams.length, this.num_categories);
+		return util.create_table(this.teams.length, this.segments.length);
 	}
 
 	create_position_table() {

@@ -30,10 +30,8 @@ function create_teams() {
 
 function main(json_deck) {
 
-	const deck = api.Deck.from_json(json_deck);
 	const teams = create_teams();
-
-	const game = new api.Game(teams, deck);
+	const game = new api.Game(teams, json_deck);
 
 	let button = document.getElementById("discard");
 	button.addEventListener('click', function() { game.discard_word() });
