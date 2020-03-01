@@ -1,17 +1,5 @@
 import * as util from '/src/util.js';
 
-/*
- * TODO
- * polyfill/babel
- * convert Category to a class
- * do words need categoryies?
- * do they need to know if they're wild?
- * should holding be limited to one word?
- * if added words are wild, should they come out of a seperate deck, and the normal deck at the same time?
- * I assume classes are hashable by default
- * Add sanity checks
- */
-
 const DEFAULT_NUM_CATEGORIES = 7;
 const DEFAULT_MAX_CYCLES = 1;//6
 const DEFAULT_MAX_HELD = 2;
@@ -39,22 +27,6 @@ export const PlayStatus = {
 	ENDED: 2
 }
 
-// TODO Make catageory a calss instead?
-// Caategories need pictures/colour
-// the board is different from a cateogry
-// what should we really consider when we allow unkown categories?
-/*
-export const Category = {
-	OBJECT: 0,  
-	ACTION: 1, 
-	WILD  : 2,
-	WORLD : 3, 
-	PERSON: 4, 
-	RANDOM: 5, 
-	NATURE: 6
-}
-*/
-
 export class Category {
 	constructor(name, color, image, is_wild) {
 		this.name = name.toLowerCase();
@@ -80,7 +52,6 @@ export class Categories {
 }
 
 export class Word {
-	//TODO make hashable?
 	constructor(word, category) {
 		this.word = word;
 		this.category = category;
@@ -381,8 +352,7 @@ export class Game {
 		this.curr_team.total_wins += wins;
 
 	}
-	
-	// TODO test end final turn
+
 	check_end_game() {
 		return this.curr_team.final_turn && this.curr_turn.wins > 0;
 	}

@@ -31,3 +31,12 @@ More here: https://www.drumondpark.com/rules/articulate
 * Think of a clean UI to represent the board.
 * Add a Tinder like card interface.
 * Complete other functionality
+* polyfill/babel
+* do words need categoryies?
+* do they need to know if they're wild?
+* should holding be limited to one word?
+* if added words are wild, should they come out of a seperate deck, and the normal deck at the same time?
+* I assume classes are hashable by default
+* Add sanity checks
+* Are words hashable? and should they be?
+* Test end final turn
