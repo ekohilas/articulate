@@ -5,7 +5,9 @@ import json
 import enum
 
 '''
-turn, round, play, 
+This is the old python backend that was used to design and plan the port to
+Javascript. It is no longer up to date or in use, and only here for reference.
+# turn, round, play,
 '''
 
 DEFAULT_NUM_CATEGORIES = 7
@@ -32,13 +34,13 @@ class PlayStatus(enum.Enum):
     ENDED = enum.auto()
 
 class Category(enum.IntEnum):
-    OBJECT = 0  
-    ACTION = 1 
+    OBJECT = 0
+    ACTION = 1
     WILD   = 2
-    WORLD  = 3 
-    PERSON = 4 
-    RANDOM = 5 
-    NATURE = 6 
+    WORLD  = 3
+    PERSON = 4
+    RANDOM = 5
+    NATURE = 6
 
 DEFAULT_START_CATEGORY = Category.OBJECT
 
@@ -105,7 +107,7 @@ class Turn:
     If a word is won, mark it as WON and draw a new word.
 
     If a word is traded, mark the old word as DEFERED.
-    If the number of cards DEFERED and HOLDING is equal to DEFAULT_MAX_HELD, 
+    If the number of cards DEFERED and HOLDING is equal to DEFAULT_MAX_HELD,
         switch to the next held card, otherwise draw a new card.
 
     If a word is discarded, mark it as DISCARDED and draw a new word.
@@ -120,7 +122,7 @@ class Turn:
     deck: Deck
     words: Dict[WordStatus, List[Word]] = field(default_factory=dict)
     status: PlayStatus = PlayStatus.PREPARING
-    
+
     def wins(self):
         return len(self.words[WordStatus.PLAYED])
 
@@ -152,7 +154,7 @@ class Turn:
         if self.status == PlayStatus.PREPARING and self.words[WordStatus.HOLDING]:
             return
 
-        if self.team.final_turn and self.words[WordStatus.HOLDING]: 
+        if self.team.final_turn and self.words[WordStatus.HOLDING]:
             return
 
         num_cards_held = len(self.words[WordStatus.DEFERED]) + len(self.words[WordStatus.HOLDING])
@@ -205,7 +207,7 @@ class Game:
     turns: List[Turn] = field(default_factory=list)
     num_categories: int = DEFAULT_NUM_CATEGORIES
     max_cycles: int = DEFAULT_MAX_CYCLES
-    max_held: int = DEFAULT_MAX_HELD 
+    max_held: int = DEFAULT_MAX_HELD
     curr_team: Team = None
     curr_turn: Turn = None
     curr_turn_num: int = 0
@@ -315,4 +317,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
