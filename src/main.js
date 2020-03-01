@@ -28,25 +28,13 @@ function create_teams() {
     return teams;
 }
 
-function main(json_deck) {
+function start_game(json_deck) {
 
     const teams = create_teams();
     const game = new api.Game(teams, json_deck);
 
-    let button = document.getElementById("discard");
-    button.addEventListener('click', function() { game.discard_word() });
-
-    button = document.getElementById("win");
-    button.addEventListener('click', function() { game.win_word() });
-
-    button = document.getElementById("defer");
-    button.addEventListener('click', function() { game.defer_word() });
-
-    button = document.getElementById("start");
-    button.addEventListener('click', function() { game.start_turn() });
-
-    button = document.getElementById("end");
-    button.addEventListener('click', function() { game.end_turn() });
+    let button = document.getElementById("start");
+    button.style.display = "none";
 
     // TODO
     const interval = window.setInterval(function() {ui.update_screen(game)}, 100);
@@ -62,6 +50,31 @@ function main(json_deck) {
 
     game.start();
 
+    return game;
+
+}
+
+function main(json_deck) {
+
+    let game = null;
+
+    let button = document.getElementById("discard");
+    button.addEventListener('click', function() { game.discard_word() });
+
+    button = document.getElementById("win");
+    button.addEventListener('click', function() { game.win_word() });
+
+    button = document.getElementById("defer");
+    button.addEventListener('click', function() { game.defer_word() });
+
+    button = document.getElementById("ready");
+    button.addEventListener('click', function() { game.start_turn() });
+
+    button = document.getElementById("end");
+    button.addEventListener('click', function() { game.end_turn() });
+
+    button = document.getElementById("start");
+    button.addEventListener('click', function() { game = start_game(json_deck) });
 
 }
 

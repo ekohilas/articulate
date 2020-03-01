@@ -2,7 +2,7 @@ import * as util from './util.js';
 
 export function update_screen(game) {
     let timer = document.getElementById("timer");
-    let button = document.getElementById("start");
+    let button = document.getElementById("ready");
     //console.log(game.turn_timer);
     // TODO
     if (game.turn_timer == 120) {

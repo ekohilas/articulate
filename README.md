@@ -13,16 +13,16 @@ More here: https://www.drumondpark.com/rules/articulate
   normal.
 
 ## Instructions
-1. run a http server such as `python3 -m http.server 8000`
-2. enter number of teams and team names
-3. Press start to start the round.
-4. Your currently held card is stored in "holding" of the map.
-    b. Press Win to score it and gain a new card.
-    c. Press Discard to remove it and gain a new card.
-    a. Press Defer to store it and gain a new card. Pressing defer again will
+1. Goto https://github.com/ekohilas/articulate or run a http server such as `python3 -m http.server 8000`
+2. Press the `start` button.
+3. Enter number of teams and team names.
+4. Press ready button to begin the round.
+5. Your currently held card is stored in "holding" of the map.
+    a. Press Win to score it and gain a new card.
+    b. Press Discard to remove it and gain a new card.
+    c. Press Defer to store it and gain a new card. Pressing defer again will
          cycle to the next card in your hand.
-5. Repeat 4 until timer runs out, then press Start again to start the new
-   round.
+6. Repeat 4 until timer runs out, then press ready again to begin the new round.
 
 ## TODO
 * Cleanup frontend javascript code.
