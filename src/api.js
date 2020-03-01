@@ -27,10 +27,10 @@ export const Color = {
 }
 
 export const WordStatus = {
-	HOLDING: 0,
-	DEFERED: 1,
-	PLAYED: 2,
-	DISCARDED: 3
+	HOLDING: "holding",
+	DEFERED: "defered",
+	PLAYED: "played",
+	DISCARDED: "discarded"
 }
 
 export const PlayStatus = {
