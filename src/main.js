@@ -1,5 +1,5 @@
-import * as api from '/src/api.js';
-import * as ui from '/src/ui.js';
+import * as api from './api.js';
+import * as ui from './ui.js';
 
 /*
  * TODO
@@ -66,7 +66,7 @@ function main(json_deck) {
 }
 
 window.onload = function() {
-    fetch("/static/words.json")
+    fetch("static/words.json")
         .then(r => r.json())
         .then(j => main(j))
 }

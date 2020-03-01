@@ -1,4 +1,4 @@
-import * as util from '/src/util.js';
+import * as util from './util.js';
 
 export function update_screen(game) {
     let timer = document.getElementById("timer");

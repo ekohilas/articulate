@@ -1,4 +1,4 @@
-import * as util from '/src/util.js';
+import * as util from './util.js';
 
 const DEFAULT_NUM_CATEGORIES = 7;
 const DEFAULT_MAX_CYCLES = 1;//6
