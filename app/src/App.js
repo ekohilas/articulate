@@ -1,22 +1,22 @@
 import logo from './logo.svg';
 import './App.css';
+import * as main from './api/main';
+import { useState } from "react";
+import words from './static/words.json'
 
 function App() {
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+
+        <button onClick={() => main.start_game(words)}> Start </button>
+
+        {/* below is just dummy stuff so js can find the id of the button */}
+        <button id="ready"></button>
+        <button id="timer"></button>
+
       </header>
     </div>
   );

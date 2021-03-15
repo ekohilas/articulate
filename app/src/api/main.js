@@ -28,13 +28,14 @@ function create_teams() {
     return teams;
 }
 
-function start_game(json_deck) {
+export function start_game(json_deck) {
 
+    console.log('test start game')
     const teams = create_teams();
     const game = new api.Game(teams, json_deck);
 
-    let button = document.getElementById("start");
-    button.style.display = "none";
+    // let button = document.getElementById("start");
+    // button.style.display = "none";
 
     // TODO
     const interval = window.setInterval(function() {ui.update_screen(game)}, 100);
