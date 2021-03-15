@@ -102,7 +102,7 @@ export class Turn {
                 Object.values(WordStatus).map(status => [status, []])
                 );
         this.status = PlayStatus.PREPARING;
-        this.timer = DEFAULT_TIMER_SECONDS;
+        //this.timer = DEFAULT_TIMER_SECONDS;
         this.categories = categories;
 
         this._draw_word();
@@ -174,9 +174,9 @@ export class Turn {
     win_word(word) {
         this._release_and_draw(WordStatus.PLAYED, word);
 
-        if (this.team.final_turn === true) {
-            this.timer = 0;
-        }
+        //if (this.team.final_turn === true) {
+        //    this.timer = 0;
+        //}
 
     }
 
@@ -310,7 +310,7 @@ export class Game {
 
     start_turn() {
         this.curr_turn.status = PlayStatus.PLAYING;
-        this.interval = window.setInterval( () => this.tick_timer() , 1 * SECOND_IN_MILLISECONDS);
+        //this.interval = window.setInterval( () => this.tick_timer() , 1 * SECOND_IN_MILLISECONDS);
         //this.interval = window.setInterval(function() { this.tick_timer.bind(this) }, 1 * SECOND_IN_MILLISECONDS);
         //window.setInterval(this.end, DEFAULT_TIMER_SECONDS * SECOND_IN_MILLISECONDS);
     }
