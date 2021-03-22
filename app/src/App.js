@@ -9,22 +9,30 @@ function App() {
   const [game, setGame] = useState(null);
   const [timeLeft, setTimeLeft] = useState(-1);
   const [playStatus, setPlayStatus] = useState(false);
+  var timer;
 
   useEffect(() => {
     if (timeLeft > 0) {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setTimeLeft(timeLeft - 1)
-      }, 1000)
+      }, 1000);
     }
     else if (timeLeft == 0 && playStatus == true) {
       setPlayStatus(false);
       game.end_turn();
     }
+    console.log('time left', timeLeft)
   }, [timeLeft]);
 
   const startRound = () => {
     setPlayStatus(true);
     setTimeLeft(10);
+  }
+  
+  const endTurn = () => {
+    clearTimeout(timer);
+    setTimeLeft(0);
+    game.end_turn();
   }
 
   return (
@@ -53,19 +61,20 @@ function App() {
           <div>
             <button onClick={() => startRound()}>Start Round</button>
           </div>
-        : <h1>Time Remaining: {timeLeft}</h1>
-        }
+        : 
+          <div>
+            <h1>Time Remaining: {timeLeft}</h1>
 
-
-        {game !== null && 
-          <div id='controls'>
+            <div id='controls'>
               {/* <button id='start'>Start</button> */}
               <button id='defer' onClick={() => game.defer_word()}>Skip</button>
               <button id='win' onClick={() => game.win_word()}>Win</button>
               {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-              <button id='end' onClick={() => game.end_turn()}>End</button>
+              <button id='end' onClick={() => endTurn()}>End</button>
+            </div>
           </div>
         }
+
         <pre id='words'>
         </pre>
 
