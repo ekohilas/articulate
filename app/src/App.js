@@ -31,8 +31,7 @@ function App() {
   
   const endTurn = () => {
     clearTimeout(timer);
-    setTimeLeft(0);
-    game.end_turn();
+    setTimeLeft(0); // this causes the game to end turn due to useEffect
   }
 
   return (
