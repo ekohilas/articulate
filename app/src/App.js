@@ -1,18 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
 import * as main from './api/main';
+import * as api from './api/api';
 import { useState } from "react";
 import words from './static/words.json'
 
 function App() {
+  const [game, setGame] = useState(null);
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
 
-        <button onClick={() => main.start_game(words)}> Start </button>
-
+        <button onClick={() => {
+          setGame(main.start_game(words));
+        }}> Start </button>
+        <button onClick={() => console.log(game)}>Print Game State</button>
+        
         {/* below is just dummy testing stuff*/}
         <div id='state'>
             <div id='timer'></div>
@@ -22,14 +27,16 @@ function App() {
             </div>
             <pre id='teams'></pre>
         </div>
-        <div id='controls'>
-            <button id='start'>Start</button>
-            <button id='defer'>Defer</button>
-            <button id='win'>Win</button>
-            <button id='discard'>Discard</button>
-            <button id='ready'>Ready</button>
-            <button id='end'>End</button>
-        </div>
+
+        {game !== null && 
+          <div id='controls'>
+              {/* <button id='start'>Start</button> */}
+              <button id='defer' onClick={() => game.defer_word()}>Skip</button>
+              <button id='win' onClick={() => game.win_word()}>Win</button>
+              {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
+              <button id='end' onClick={() => game.end_turn()}>End</button>
+          </div>
+        }
         <pre id='words'>
         </pre>
 

@@ -66,33 +66,3 @@ export function start_game(json_deck) {
     return game;
 
 }
-
-function main(json_deck) {
-
-    let game = null;
-
-    let button = document.getElementById("discard");
-    button.addEventListener('click', function() { game.discard_word() });
-
-    button = document.getElementById("win");
-    button.addEventListener('click', function() { game.win_word() });
-
-    button = document.getElementById("defer");
-    button.addEventListener('click', function() { game.defer_word() });
-
-    button = document.getElementById("ready");
-    button.addEventListener('click', function() { game.start_turn() });
-
-    button = document.getElementById("end");
-    button.addEventListener('click', function() { game.end_turn() });
-
-    button = document.getElementById("start");
-    button.addEventListener('click', function() { game = start_game(json_deck) });
-
-}
-
-window.onload = function() {
-    fetch("static/words.json")
-        .then(r => r.json())
-        .then(j => main(j))
-}

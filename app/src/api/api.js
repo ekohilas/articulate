@@ -337,6 +337,7 @@ export class Game {
     }
 
     win_word() {
+        console.log('clicked win')
         this.curr_turn.win_word();
         this.show_words();
     }
