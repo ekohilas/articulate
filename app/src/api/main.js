@@ -34,7 +34,7 @@ function create_test_teams(num_teams) {
     //const num_teams = parseInt(prompt("How many teams?: ", ""));
     let teams = [];
     for (let i = 0; i < num_teams; i++) {
-        const name = `Team ${i}`;
+        const name = `Team ${i+1}`;
         //const name = prompt("Enter Team name: ", "");
         teams.push(new api.Team(name, Object.values(api.Color)[i]));
     }

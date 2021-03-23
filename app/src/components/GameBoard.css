@@ -1,0 +1,10 @@
+.team-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  /* border: 2px solid white; */
+}
+
+.team-header {
+  padding: 0 30px;
+}

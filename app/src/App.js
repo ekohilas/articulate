@@ -1,14 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import * as main from './api/main';
-import * as api from './api/api';
-import * as ui from './api/ui';
 import { useState, useEffect } from "react";
 import GameBoard from './components/GameBoard';
 import words from './static/words.json';
 import articulate from './images/articulate.jpeg';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
 
 
 function App() {
@@ -55,7 +53,7 @@ function App() {
 
           <div>
             Number of Teams
-            <ButtonGroup toggle>
+            <ButtonGroup toggle vertical>
               {radios.map((radio, idx) => (
                 <ToggleButton
                   key={idx}
@@ -65,19 +63,18 @@ function App() {
                   value={radio.value}
                   checked={numTeams === radio.value}
                   onChange={(e) => setNumTeams(e.currentTarget.value)}
+                  className="team-size"
                 >
                   {radio.name}
                 </ToggleButton>
               ))}
             </ButtonGroup>
 
-            <button onClick={() => {
+            <Button variant="primary" onClick={() => {
               setGame(main.start_game(words, numTeams));
-            }}> Create Game </button>
+            }}> Create Game </Button>
           </div>
           }
-
-          <button onClick={() => console.log(game)}>Print Game State</button>
           
           {game !== null && 
             <GameBoard gameState={game} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>

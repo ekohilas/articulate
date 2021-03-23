@@ -1,4 +1,6 @@
-import * as main from '../api/main';
+
+import './GameBoard.css';
+import Button from 'react-bootstrap/Button';
 
 export default function GameBoard(props) {
     return (
@@ -13,20 +15,31 @@ export default function GameBoard(props) {
 
             </div>
 
-            {props.playStatus == false ? 
+            <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
+            
+            <div className="team-div" >
+                {props.gameState.teams.map((team, idx) => (
+                    <div className="team-header" key={idx}>
+                        <p>{team.name} </p>
+                        <p>{team.total_wins}</p>
+                    </div>    
+                ))}
+            </div>
+
+            {props.playStatus === false ? 
             <div>
-                <button onClick={() => props.startRound()}>Start Round</button>
+                <Button onClick={() => props.startRound()} variant="success">Start Round</Button>
             </div>
             : 
             <div>
-                <h1>Time Remaining: {props.timeLeft}</h1>
+                <h1>{props.timeLeft}</h1>
 
                 <div id='controls'>
                 {/* <button id='start'>Start</button> */}
-                <button id='defer' onClick={() => props.gameState.defer_word()}>Skip</button>
-                <button id='win' onClick={() => props.gameState.win_word()}>Win</button>
+                <Button id='defer' onClick={() => props.gameState.defer_word()}>Skip</Button>
+                <Button id='win' onClick={() => props.gameState.win_word()}>Win</Button>
                 {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                <button id='end' onClick={() => props.endTurn()}>End</button>
+                <Button id='end' onClick={() => props.endTurn()}>End</Button>
                 </div>
             </div>
             }
