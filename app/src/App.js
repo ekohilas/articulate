@@ -2,7 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import * as main from './api/main';
 import * as api from './api/api';
+import * as ui from './api/ui';
 import { useState, useEffect } from "react";
+import GameBoard from './components/GameBoard';
 import words from './static/words.json';
 import articulate from './images/articulate.jpeg';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -32,7 +34,6 @@ function App() {
       setPlayStatus(false);
       game.end_turn();
     }
-    console.log('time left', timeLeft)
   }, [timeLeft]);
 
   const startRound = () => {
@@ -49,6 +50,8 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={articulate} className="App-logo" alt="logo" />
+
+          {game === null && 
 
           <div>
             Number of Teams
@@ -67,44 +70,19 @@ function App() {
                 </ToggleButton>
               ))}
             </ButtonGroup>
-          </div>
 
-          {game === null && 
             <button onClick={() => {
               setGame(main.start_game(words, numTeams));
             }}> Create Game </button>
+          </div>
           }
+
           <button onClick={() => console.log(game)}>Print Game State</button>
-
+          
+          {game !== null && 
+            <GameBoard gameState={game} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>
+          }
         
-        {/* below is just dummy testing stuff*/}
-        <div id='state'>
-            <div id='timer'></div>
-            <div id='board'>
-                <div id='category'></div>
-                <div id='position'></div>
-            </div>
-            <pre id='teams'></pre>
-        </div>
-
-        {playStatus == false ? 
-          <div>
-            <button onClick={() => startRound()}>Start Round</button>
-          </div>
-        : 
-          <div>
-            <h1>Time Remaining: {timeLeft}</h1>
-
-            <div id='controls'>
-              {/* <button id='start'>Start</button> */}
-              <button id='defer' onClick={() => game.defer_word()}>Skip</button>
-              <button id='win' onClick={() => game.win_word()}>Win</button>
-              {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-              <button id='end' onClick={() => endTurn()}>End</button>
-            </div>
-          </div>
-        }
-
         <pre id='words'>
         </pre>
 

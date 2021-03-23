@@ -52,10 +52,6 @@ export function start_game(json_deck, num_teams) {
     // TODO
     //const interval = window.setInterval(function() {ui.update_screen(game)}, 100);
     //window.requestAnimationFrame(function() {update_timer(game)});
-
-    const category = document.getElementById('category');
-    const board = new ui.Board(game);
-    category.appendChild(board.create_layout());
     //category.appendChild(game.create_category_table());
 
     //const position = document.getElementById('position');
