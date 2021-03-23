@@ -28,8 +28,9 @@ function create_teams() {
     return teams;
 }
 
-function create_test_teams() {
-    const num_teams = 2;
+function create_test_teams(num_teams) {
+    // const num_teams = 2;
+    var num_teams = parseInt(num_teams);
     //const num_teams = parseInt(prompt("How many teams?: ", ""));
     let teams = [];
     for (let i = 0; i < num_teams; i++) {
@@ -40,10 +41,9 @@ function create_test_teams() {
     return teams;
 }
 
-export function start_game(json_deck) {
+export function start_game(json_deck, num_teams) {
 
-    console.log('test start game')
-    const teams = create_test_teams();
+    const teams = create_test_teams(num_teams);
     const game = new api.Game(teams, json_deck);
 
     // let button = document.getElementById("start");

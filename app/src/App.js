@@ -3,12 +3,23 @@ import './App.css';
 import * as main from './api/main';
 import * as api from './api/api';
 import { useState, useEffect } from "react";
-import words from './static/words.json'
+import words from './static/words.json';
+import articulate from './images/articulate.jpeg';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 
 function App() {
   const [game, setGame] = useState(null);
   const [timeLeft, setTimeLeft] = useState(-1);
   const [playStatus, setPlayStatus] = useState(false);
+  const [numTeams, setNumTeams] = useState('2');
+
+  const radios = [
+    { name: '2', value: '2' },
+    { name: '3', value: '3' },
+    { name: '4', value: '4' },
+  ];
   var timer;
 
   useEffect(() => {
@@ -37,14 +48,34 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={articulate} className="App-logo" alt="logo" />
 
-        {game === null && 
-          <button onClick={() => {
-            setGame(main.start_game(words));
-          }}> Create Game </button>
-        }
-        <button onClick={() => console.log(game)}>Print Game State</button>
+          <div>
+            Number of Teams
+            <ButtonGroup toggle>
+              {radios.map((radio, idx) => (
+                <ToggleButton
+                  key={idx}
+                  type="radio"
+                  variant="secondary"
+                  name="radio"
+                  value={radio.value}
+                  checked={numTeams === radio.value}
+                  onChange={(e) => setNumTeams(e.currentTarget.value)}
+                >
+                  {radio.name}
+                </ToggleButton>
+              ))}
+            </ButtonGroup>
+          </div>
+
+          {game === null && 
+            <button onClick={() => {
+              setGame(main.start_game(words, numTeams));
+            }}> Create Game </button>
+          }
+          <button onClick={() => console.log(game)}>Print Game State</button>
+
         
         {/* below is just dummy testing stuff*/}
         <div id='state'>
