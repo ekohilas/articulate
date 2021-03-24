@@ -36,9 +36,9 @@ export class Category {
     }
 }
 
-export class Categories {
+export class Sections {
 
-    constructor() {
+    constructor(categories, wild_position) {
 
     }
 
@@ -389,6 +389,44 @@ export class Game {
 
     create_position_table() {
         return util.create_table(this.teams.length, this.max_cycles);
+    }
+
+    get current_word() {
+        if (this.curr_turn == null) {
+            return undefined;
+        } else {
+            return this.curr_turn.words.get(WordStatus.HOLDING)[0];
+        }
+    }
+
+    get current_word_text() {
+        const word = this.current_word;
+        if (word == null) {
+            return undefined;
+        } else {
+            return word.word;
+        }
+    }
+
+    get current_word_category() {
+        const word = this.current_word;
+        if (word == null) {
+            return undefined;
+        } else {
+            return word.category.name;
+        }
+    }
+
+    get segment_names() {
+        if (this.segments == null) {
+            return undefined;
+        } else {
+            return this.segments.map(category => category.name);
+        }
+    }
+
+    get current_team_wins() {
+        return this.curr_turn.wins;
     }
 
 }
