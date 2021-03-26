@@ -36,7 +36,7 @@ function App() {
 
   const startRound = () => {
     setPlayStatus(true);
-    setTimeLeft(10);
+    setTimeLeft(50);
   }
   
   const endTurn = () => {
@@ -80,9 +80,6 @@ function App() {
             <GameBoard gameState={game} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>
           }
         
-        <pre id='words'>
-        </pre>
-
       </header>
     </div>
   );

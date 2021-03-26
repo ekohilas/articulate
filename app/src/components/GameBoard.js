@@ -2,10 +2,20 @@
 import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
 
+const categoryColours = {
+    'action': '#F37027',
+    'nature': '#008752',
+    'person': '#FFCB04',
+    'world': '#016FA5',
+    'random': '#ED1C24',
+    'object': '#0099DA',
+    'wild': '#BB99DA'
+}
+
 export default function GameBoard(props) {
     return (
         <div>
-            <div id='state'>
+            {/* <div id='state'>
             <div id='timer'></div>
             <div id='board'>
                 <div id='category'></div>
@@ -13,7 +23,7 @@ export default function GameBoard(props) {
             </div>
             <pre id='teams'></pre>
 
-            </div>
+            </div> */}
 
             <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
             
@@ -43,6 +53,13 @@ export default function GameBoard(props) {
                 </div>
             </div>
             }
+
+            <div className="card">
+                <div className="card-category border-top" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
+                <div className="card-word">{props.gameState.current_word_text}</div>
+                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
+            </div>
+
         </div>
     )
 }

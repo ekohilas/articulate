@@ -284,7 +284,7 @@ export class Game {
                 this.categories
                 );
         this.turns.push(this.curr_turn);
-        this.show_words();
+        // this.show_words();
     }
 
     show_words() {
@@ -333,18 +333,18 @@ export class Game {
 
     discard_word() {
         this.curr_turn.discard_word();
-        this.show_words();
+        // this.show_words();
     }
 
     win_word() {
         console.log('clicked win')
         this.curr_turn.win_word();
-        this.show_words();
+        // this.show_words();
     }
 
     defer_word() {
         this.curr_turn.defer_word();
-        this.show_words();
+        // this.show_words();
     }
 
     update_team_wins() {
