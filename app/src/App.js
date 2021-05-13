@@ -38,7 +38,7 @@ function App() {
     setPlayStatus(true);
     setTimeLeft(50);
   }
-  
+
   const endTurn = () => {
     clearTimeout(timer);
     setTimeLeft(0); // this causes the game to end turn due to useEffect
@@ -49,7 +49,7 @@ function App() {
       <header className="App-header">
         <img src={articulate} className="App-logo" alt="logo" />
 
-          {game === null && 
+          {game === null &&
 
           <div>
             Number of Teams
@@ -75,11 +75,12 @@ function App() {
             }}> Create Game </Button>
           </div>
           }
-          
-          {game !== null && 
-            <GameBoard gameState={game} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>
+
+          {game !== null &&
+            <GameBoard gameState={game} numTeams={numTeams} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>
           }
-        
+        <pre id='words'>
+        </pre>
       </header>
     </div>
   );

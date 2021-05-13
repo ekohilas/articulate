@@ -18,7 +18,9 @@ export default function GameBoard(props) {
             {/* <div id='state'>
             <div id='timer'></div>
             <div id='board'>
-                <div id='category'></div>
+                <div id='category'>
+                    {createTable(createGrid(props.numTeams, 7))}
+                </div>
                 <div id='position'></div>
             </div>
             <pre id='teams'></pre>
@@ -26,21 +28,21 @@ export default function GameBoard(props) {
             </div> */}
 
             <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
-            
+
             <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
                     <div className="team-header" key={idx}>
                         <p>{team.name} </p>
                         <p>{team.total_wins}</p>
-                    </div>    
+                    </div>
                 ))}
             </div>
 
-            {props.playStatus === false ? 
+            {props.playStatus === false ?
             <div>
                 <Button onClick={() => props.startRound()} variant="success">Start Round</Button>
             </div>
-            : 
+            :
             <div>
                 <h1>{props.timeLeft}</h1>
 
@@ -62,4 +64,39 @@ export default function GameBoard(props) {
 
         </div>
     )
+}
+
+function createGrid(numRows, numCols) {
+    console.log(numRows, numCols);
+    let rows = [];
+    for (let i = 0; i < numRows; i++) {
+        let cols = [];
+        for (let j = 0; j < numCols; j++) {
+            cols.push(`${i}, ${j}`);
+        }
+        rows.push(cols);
+    }
+    return rows;
+}
+
+function createTable(tableData) {
+ return (
+  <table>
+   <tbody>
+   {
+    tableData.map(rowData => {
+      return (
+        <tr>
+          {
+           rowData.map(cellData => {
+              return (<td> {cellData} </td>);
+           })
+          }
+        </tr>
+    );
+    })
+   }
+  </tbody>
+  </table>
+ )
 }
