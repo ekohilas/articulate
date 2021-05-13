@@ -1,31 +1,42 @@
 
 import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
+import { useState, useEffect } from "react";
 
 const categoryColours = {
-    'action': '#F37027',
-    'nature': '#008752',
-    'person': '#FFCB04',
-    'world': '#016FA5',
-    'random': '#ED1C24',
     'object': '#0099DA',
-    'wild': '#BB99DA'
+    'action': '#F37027',
+    'wild': '#BB99DA',
+    'world': '#016FA5',
+    'person': '#FFCB04',
+    'random': '#ED1C24',
+    'nature': '#008752',
 }
 
 export default function GameBoard(props) {
+
+    const [categoryTable, setCategoryTable] = useState(initialiseTable(props.numTeams, 7));
+
+    function updateTable(table, teams) {
+        teams.forEach(
+            (team, i) =>
+            moveTeam(table, i, team.total_wins % 7)
+        )
+        setCategoryTable(table);
+    }
+
     return (
         <div>
-            {/* <div id='state'>
-            <div id='timer'></div>
-            <div id='board'>
-                <div id='category'>
-                    {createTable(createGrid(props.numTeams, 7))}
+            <div id='state'>
+                <div id='timer'></div>
+                <div id='board'>
+                    <div id='category'>
+                        {createTable(categoryTable)}
+                    </div>
+                    <div id='position'></div>
                 </div>
-                <div id='position'></div>
+                <pre id='teams'></pre>
             </div>
-            <pre id='teams'></pre>
-
-            </div> */}
 
             <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
 
@@ -51,7 +62,11 @@ export default function GameBoard(props) {
                 <Button id='defer' onClick={() => props.gameState.defer_word()}>Skip</Button>
                 <Button id='win' onClick={() => props.gameState.win_word()}>Win</Button>
                 {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                <Button id='end' onClick={() => props.endTurn()}>End</Button>
+                <Button id='end' onClick={() => {
+                    props.endTurn();
+                    updateTable(categoryTable, props.gameState.teams);
+                    }
+                }>End</Button>
                 </div>
             </div>
             }
@@ -66,13 +81,27 @@ export default function GameBoard(props) {
     )
 }
 
+function initialiseTable(numTeams, numCategories) {
+    let table = createGrid(numTeams, numCategories);
+    table.forEach(
+        row => row[0] = "*"
+    );
+    return table;
+}
+
+function moveTeam(table, teamNumber, categoryNumber) {
+    table[teamNumber].forEach(
+        (value, i, array) =>
+        array[i] = (i === categoryNumber ? "*" : undefined)
+    );
+}
+
 function createGrid(numRows, numCols) {
-    console.log(numRows, numCols);
     let rows = [];
     for (let i = 0; i < numRows; i++) {
         let cols = [];
         for (let j = 0; j < numCols; j++) {
-            cols.push(`${i}, ${j}`);
+            cols.push(undefined);
         }
         rows.push(cols);
     }
@@ -88,8 +117,15 @@ function createTable(tableData) {
       return (
         <tr>
           {
-           rowData.map(cellData => {
-              return (<td> {cellData} </td>);
+           rowData.map((cellData, i) => {
+              return (
+                <td
+                    style={{
+                        backgroundColor: Object.values(categoryColours)[i],
+                        width: "50px",
+                        height: "50px",
+                    }}
+                > {cellData} </td>);
            })
           }
         </tr>

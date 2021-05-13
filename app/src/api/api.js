@@ -317,7 +317,7 @@ export class Game {
 
     end_turn() {
         console.log("Times up!");
-        this.curr_turn.timer = 0;
+        //this.curr_turn.timer = 0;
         this.curr_turn.status = PlayStatus.ENDED;
         this.update_team_wins();
 
