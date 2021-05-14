@@ -2,6 +2,7 @@
 import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from "react";
+import TinderCard from 'react-tinder-card'
 
 const categoryColours = {
     'object': '#0099DA',
@@ -13,10 +14,14 @@ const categoryColours = {
     'nature': '#008752',
 }
 
+
 export default function GameBoard(props) {
+    const [currCards, setCards] = useState([{
+        word: props.gameState.current_word_text,
+        category: props.gameState.current_word_category
+    }])
     const [timeLeft, setTimeLeft] = useState(-1);
     const [playStatus, setPlayStatus] = useState(false);
-
     const [categoryTable, setCategoryTable] = useState(initialiseTable(props.numTeams, 7));
 
     var timer;
@@ -28,18 +33,52 @@ export default function GameBoard(props) {
             }, 1000);
         }
         else if (timeLeft == 0 && playStatus == true) {
-            setPlayStatus(false);
-            props.gameState.end_turn(); // ends the turn in backend
-            updateTable(categoryTable, props.gameState.teams);
+            endTurn();
         }
     }, [timeLeft]);
 
     const startRound = () => {
         setPlayStatus(true);
-        setTimeLeft(5);
+        console.log(currCards, playStatus);
+        setTimeLeft(20);
+    }
+    const endTurn = () => {
+        setPlayStatus(false);
+        props.gameState.end_turn(); // ends the turn in backend
+        updateTable(categoryTable, props.gameState.teams);
+        setCards([{
+            word: props.gameState.current_word_text,
+            category: props.gameState.current_word_category
+        }])
     }
 
-    const endTurn = () => {
+    const winCard = () => {
+        props.gameState.win_word();
+        setCards([{
+            word: props.gameState.current_word_text,
+            category: props.gameState.current_word_category
+        }])
+    }
+    const deferCard = () => {
+        props.gameState.defer_word();
+        setCards([{
+            word: props.gameState.current_word_text,
+            category: props.gameState.current_word_category
+        }])
+    }
+    const onSwipe = (direction) => {
+        // disable if not current in a round
+        // if (playStatus === false) return;
+        console.log('You swiped: ' + direction);
+        if (direction === 'left') {
+            winCard();
+        }
+        if (direction === 'right') {
+            deferCard();
+        }
+    }
+
+    const clearTime = () => {
         clearTimeout(timer);        
         setTimeLeft(0); // this causes the game to end turn due to useEffect
     }
@@ -88,20 +127,29 @@ export default function GameBoard(props) {
 
                 <div id='controls'>
                 {/* <button id='start'>Start</button> */}
-                <Button id='defer' onClick={() => props.gameState.defer_word()}>Skip</Button>
-                <Button id='win' onClick={() => props.gameState.win_word()}>Win</Button>
+                <Button id='defer' onClick={() => deferCard()}>Skip</Button>
+                <Button id='win' onClick={() => winCard()}>Win</Button>
                 {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                <Button id='end' onClick={() => endTurn()}>End</Button>
+                <Button id='end' onClick={() => clearTime()}>End</Button>
                 </div>
             </div>
             }
 
-            <div className="card">
-                <div className="card-category border-top" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
-                <div className="card-word">{props.gameState.current_word_text}</div>
-                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
-            </div>
 
+            <div>
+                {currCards.map((card) => {
+                    return (
+                        <TinderCard onSwipe={onSwipe} key={card.word} preventSwipe={['up', 'down', 'left', 'right']}>
+                            <div className="card">
+                                <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                <div className="card-word">{card.word}</div>
+                                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                            </div>
+                        </TinderCard>
+                )})}
+                
+            </div>
+                
         </div>
     )
 }
