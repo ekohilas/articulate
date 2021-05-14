@@ -1,6 +1,7 @@
 
 import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
+import TinderCard from 'react-tinder-card'
 
 const categoryColours = {
     'action': '#F37027',
@@ -12,7 +13,37 @@ const categoryColours = {
     'wild': '#BB99DA'
 }
 
+
 export default function GameBoard(props) {
+    let currentCards = [
+        {
+            word: props.gameState.current_word_text,
+            category: props.gameState.current_word_category
+        },
+        {
+            word: '',
+            category: props.gameState.current_word_category
+        }
+    ]
+
+    const onSwipe = (direction) => {
+        console.log('You swiped: ' + direction)
+    }
+
+    const onCardLeftScreen = (myIdentifier) => {
+        console.log(myIdentifier + ' left the screen')
+        console.log('time to replenish cards');
+        props.gameState.win_word();
+        console.log(props);
+        
+        currentCards = [
+            {
+                word: props.gameState.current_word_text,
+                category: props.gameState.current_word_category
+            },
+        ]
+    }
+
     return (
         <div>
             {/* <div id='state'>
@@ -26,7 +57,7 @@ export default function GameBoard(props) {
             </div> */}
 
             <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
-            
+
             <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
                     <div className="team-header" key={idx}>
@@ -54,12 +85,21 @@ export default function GameBoard(props) {
             </div>
             }
 
-            <div className="card">
-                <div className="card-category border-top" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
-                <div className="card-word">{props.gameState.current_word_text}</div>
-                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[props.gameState.current_word_category]}}>{props.gameState.current_word_category}</div>
-            </div>
+            {currentCards.map((card) =>
+                <TinderCard onSwipe={onSwipe} onCardLeftScreen={() => onCardLeftScreen('fooBar')} preventSwipe={['up', 'down']}>
+                    <div className="card">
+                        <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                        <div className="card-word">{card.word}</div>
+                        <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                    </div>
+                </TinderCard>
+            )}
+
+            
+
+            
 
         </div>
     )
 }
+
