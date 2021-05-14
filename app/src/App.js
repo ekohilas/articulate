@@ -30,13 +30,14 @@ function App() {
     }
     else if (timeLeft == 0 && playStatus == true) {
       setPlayStatus(false);
+      console.log("i should update table");
       game.end_turn();
     }
   }, [timeLeft]);
 
   const startRound = () => {
     setPlayStatus(true);
-    setTimeLeft(50);
+    setTimeLeft(5);
   }
 
   const endTurn = () => {

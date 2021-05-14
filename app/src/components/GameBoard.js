@@ -14,14 +14,42 @@ const categoryColours = {
 }
 
 export default function GameBoard(props) {
+    const [timeLeft, setTimeLeft] = useState(-1);
+    const [playStatus, setPlayStatus] = useState(false);
 
     const [categoryTable, setCategoryTable] = useState(initialiseTable(props.numTeams, 7));
+
+    var timer;
+
+    useEffect(() => {
+        if (timeLeft > 0) {
+            timer = setTimeout(() => {
+                setTimeLeft(timeLeft - 1)
+            }, 1000);
+        }
+        else if (timeLeft == 0 && playStatus == true) {
+            setPlayStatus(false);
+            props.gameState.end_turn(); // ends the turn in backend
+            updateTable(categoryTable, props.gameState.teams);
+        }
+    }, [timeLeft]);
+
+    const startRound = () => {
+        setPlayStatus(true);
+        setTimeLeft(5);
+    }
+
+    const endTurn = () => {
+        clearTimeout(timer);        
+        setTimeLeft(0); // this causes the game to end turn due to useEffect
+    }
 
     function updateTable(table, teams) {
         teams.forEach(
             (team, i) =>
             moveTeam(table, i, team.total_wins % 7)
         )
+        console.log("i should be updating table");
         setCategoryTable(table);
     }
 
@@ -31,13 +59,14 @@ export default function GameBoard(props) {
                 <div id='timer'></div>
                 <div id='board'>
                     <div id='category'>
-                        {createTable(categoryTable)}
                     </div>
                     <div id='position'></div>
                 </div>
                 <pre id='teams'></pre>
             </div>
-
+            <div>
+                {createTable(categoryTable)}
+            </div>
             <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
 
             <div className="team-div" >
@@ -49,24 +78,20 @@ export default function GameBoard(props) {
                 ))}
             </div>
 
-            {props.playStatus === false ?
+            {playStatus === false ?
             <div>
-                <Button onClick={() => props.startRound()} variant="success">Start Round</Button>
+                <Button onClick={() => startRound()} variant="success">Start Round</Button>
             </div>
             :
             <div>
-                <h1>{props.timeLeft}</h1>
+                <h1>{timeLeft}</h1>
 
                 <div id='controls'>
                 {/* <button id='start'>Start</button> */}
                 <Button id='defer' onClick={() => props.gameState.defer_word()}>Skip</Button>
                 <Button id='win' onClick={() => props.gameState.win_word()}>Win</Button>
                 {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                <Button id='end' onClick={() => {
-                    props.endTurn();
-                    updateTable(categoryTable, props.gameState.teams);
-                    }
-                }>End</Button>
+                <Button id='end' onClick={() => endTurn()}>End</Button>
                 </div>
             </div>
             }
