@@ -77,10 +77,12 @@ export class Deck {
     }
 
     draw_from(category, categories) {
+        console.log(category);
         if (category.is_wild === true) {
             category = util.random_choice(categories);
         }
 
+        console.log(category);
         const word = util.choice_from_set(this.unplayed.get(category));
 
         this.unplayed.get(category).delete(word);
@@ -257,7 +259,7 @@ export class Game {
     }
 
     arrange_segments(wild_position) {
-        this.segments = this.categories;
+        this.segments = [...this.categories];
         if (wild_position !== undefined) {
             this.segments.splice(wild_position, 0, this.wild_category);
         }
