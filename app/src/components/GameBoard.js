@@ -101,20 +101,12 @@ export default function GameBoard(props) {
     }
 
     return (
-        <div>
-            <div id='state'>
-                <div id='timer'></div>
-                <div id='board'>
-                    <div id='category'>
-                    </div>
-                    <div id='position'></div>
-                </div>
-                <pre id='teams'></pre>
-            </div>
-            <div>
+        <div className="root">
+            <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button>
+            
+            <div className="board">
                 {createTable(categoryTable)}
             </div>
-            <Button onClick={() => console.log(props.gameState)}>Print Game State</Button>
 
             <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
@@ -126,24 +118,26 @@ export default function GameBoard(props) {
             </div>
 
             {playStatus === false ?
-            <div>
-                <Button onClick={() => setPlayStatus(true)} variant="success">Start Round</Button>
+            <div className="round-div">
+                <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
             </div>
             :
-            <div>
+            <div className="round-view round-div">
                 <h1>{timeLeft}</h1>
 
-                <div id='controls'>
-                {/* <button id='start'>Start</button> */}
-                <Button id='defer' onClick={() => deferCard()}>Skip</Button>
-                <Button id='win' onClick={() => winCard()}>Win</Button>
-                {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                <Button id='end' onClick={() => clearTime()}>End</Button>
+                <div className="game-buttons-div">
+                    <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
+                    <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>
+                    {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
+                    <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
                 </div>
+
             </div>
             }
 
-            <div>
+            
+
+            <div className="card-div">
                 {currCards.map((card) => {
                     return (
                         playStatus === true ?
@@ -164,7 +158,9 @@ export default function GameBoard(props) {
                         </TinderCard>
                 )})}
             </div>
-                
+            <p className="helper-text">
+                Swipe left if you've won the card and right to pass/skip
+            </p>
         </div>
     )
 }

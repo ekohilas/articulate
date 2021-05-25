@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.game-options {
+  display: flex;
+  flex-direction: column;
+}
+.create-button {
+  margin-top: 48px;
+}
 .team-size {
   padding: 0 20px;
 }

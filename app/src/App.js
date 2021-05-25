@@ -1,9 +1,10 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import * as main from './api/main';
 import { useState, useEffect } from "react";
 import GameBoard from './components/GameBoard';
 import words from './static/words.json';
-import articulate from './images/articulate.jpeg';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
@@ -22,13 +23,16 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={articulate} className="App-logo" alt="logo" />
+        {/* <img src={articulate} className="App-logo" alt="logo" /> */}
 
           {game === null &&
 
-          <div>
-            Number of Teams
-            <ButtonGroup toggle vertical>
+          <div className="game-options">
+            <div>
+              Number of Teams
+            </div>
+
+            <ButtonGroup toggle size="lg">
               {radios.map((radio, idx) => (
                 <ToggleButton
                   key={idx}
@@ -44,10 +48,11 @@ function App() {
                 </ToggleButton>
               ))}
             </ButtonGroup>
-
-            <Button variant="primary" onClick={() => {
+            
+            <Button variant="primary" className="create-button" onClick={() => {
               setGame(main.start_game(words, numTeams));
             }}> Create Game </Button>
+
           </div>
           }
 
