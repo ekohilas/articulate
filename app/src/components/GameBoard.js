@@ -40,12 +40,11 @@ export default function GameBoard(props) {
 
     useEffect(() => {
         if (playStatus == true) {
-            console.log('starting turn set play status', playStatus)
+            // console.log('starting turn set play status', playStatus)
             setTimeLeft(20);
         }
         // prevent ending turn on first default set
         else if (playStatus == false && timeLeft != -1) {
-            console.log('ending turn set play status false')
             props.gameState.end_turn(); // ends the turn in backend
             updateTable(categoryTable, props.gameState.teams);
             setCards([{
@@ -78,10 +77,10 @@ export default function GameBoard(props) {
         // if (playStatus == false) return;
         
         console.log('You swiped: ' + direction);
-        if (direction === 'left') {
+        if (direction === 'right') {
             winCard();
         }
-        if (direction === 'right') {
+        if (direction === 'left') {
             deferCard();
         }
     }
@@ -135,8 +134,6 @@ export default function GameBoard(props) {
             </div>
             }
 
-            
-
             <div className="card-div">
                 {currCards.map((card) => {
                     return (
@@ -159,7 +156,7 @@ export default function GameBoard(props) {
                 )})}
             </div>
             <p className="helper-text">
-                Swipe left if you've won the card and right to pass/skip
+                Swipe right if you've won the card and left to pass/skip
             </p>
         </div>
     )
