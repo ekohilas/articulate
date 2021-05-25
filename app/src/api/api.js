@@ -131,6 +131,7 @@ export class Turn {
 
     _draw_word() {
 
+        // don't draw if we're preparing and we're already holding a word
         if (
                 this.status === PlayStatus.PREPARING
                 && this.words.get(WordStatus.HOLDING).length !== 0
@@ -138,6 +139,15 @@ export class Turn {
             return;
         }
 
+        // don't draw if it's the final turn and we've already won a word
+        if (
+                this.team.final_turn === true
+                && this.words.get(WordStatus.PLAYED).length >= 0
+           ) {
+            return;
+        }
+
+        // don't draw if it's the final turn and we're already holding a word
         if (
                 this.team.final_turn === true
                 && this.words.get(WordStatus.HOLDING).length !== 0
@@ -163,6 +173,7 @@ export class Turn {
     }
 
     _release_and_draw(to_category, word) {
+        // stop letting cards be drawn when the game is over
         this._move_word(WordStatus.HOLDING, to_category, word);
         this._draw_word();
     }
@@ -173,14 +184,10 @@ export class Turn {
 
     win_word(word) {
         this._release_and_draw(WordStatus.PLAYED, word);
-
-        //if (this.team.final_turn === true) {
-        //    this.timer = 0;
-        //}
-
     }
 
     defer_word(word) {
+        // TODO: allow defering on the final turn?
         this._release_and_draw(WordStatus.DEFERED, word);
     }
 }
@@ -201,6 +208,7 @@ export class Game {
         this.curr_team = undefined;
         this.curr_turn = undefined;
         this.interval = undefined;
+        this.game_over = false;
 
         this.import_json(object);
         this.arrange_segments(2);
@@ -331,18 +339,28 @@ export class Game {
     }
 
     discard_word() {
-        this.curr_turn.discard_word();
+        if (this.curr_turn.team.final_turn === true) {
+            this.end_turn();
+        } else {
+            this.curr_turn.discard_word();
+        }
         // this.show_words();
     }
 
     win_word() {
         console.log('clicked win')
         this.curr_turn.win_word();
-        // this.show_words();
+        if (this.curr_turn.team.final_turn === true) {
+            this.end_turn();
+        }
     }
 
     defer_word() {
-        this.curr_turn.defer_word();
+        if (this.curr_turn.team.final_turn === true) {
+            this.end_turn();
+        } else {
+            this.curr_turn.defer_word();
+        }
         // this.show_words();
     }
 
@@ -393,6 +411,7 @@ export class Game {
 
     end_game() {
         console.log(this.curr_team.name + " won!");
+        this.game_over = true;
     }
 
     create_category_table() {
