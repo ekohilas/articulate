@@ -76,7 +76,7 @@ export default function GameBoard(props) {
         // disable if not current in a round
         console.log('play status', playStatus);
         // if (playStatus == false) return;
-        
+
         console.log('You swiped: ' + direction);
         if (direction === 'right') {
             winCard();
@@ -88,13 +88,13 @@ export default function GameBoard(props) {
 
     const clearTime = () => {
         setTimeLeft(0); // this causes the game to end turn due to useEffect
-        clearTimeout(timer);    
+        clearTimeout(timer);
     }
 
     function updateTable(table, teams) {
         teams.forEach(
             (team, i) =>
-            moveTeam(table, i, team.total_wins % 7)
+            moveTeam(table, i, team.total_wins % 7, Math.floor(team.total_wins / 7))
         )
         setCategoryTable(table);
     }
@@ -102,7 +102,7 @@ export default function GameBoard(props) {
     return (
         <div className="root">
             <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button>
-            
+
             <div className="board">
                 {createTable(categoryTable)}
             </div>
@@ -123,9 +123,9 @@ export default function GameBoard(props) {
                     <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
                 </div>
 
-                <p className="points-update-text"> {props.gameState.turns.length > 1 ? 
+                <p className="points-update-text"> {props.gameState.turns.length > 1 ?
                     `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : null}
-                </p>                
+                </p>
             </div>
             :
             <div className="round-view round-div">
@@ -161,10 +161,16 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                 )})}
+<<<<<<< HEAD
             </div>
             <p className="helper-text">
                 Swipe right if you've won the card and left to pass/skip
             </p>
+=======
+
+            </div>
+
+>>>>>>> board-fixes
         </div>
     )
 }
@@ -172,15 +178,15 @@ export default function GameBoard(props) {
 function initialiseTable(numTeams, numCategories) {
     let table = createGrid(numTeams, numCategories);
     table.forEach(
-        row => row[0] = "*"
+        row => row[0] = 0
     );
     return table;
 }
 
-function moveTeam(table, teamNumber, categoryNumber) {
+function moveTeam(table, teamNumber, categoryNumber, roundNumber) {
     table[teamNumber].forEach(
         (value, i, array) =>
-        array[i] = (i === categoryNumber ? "*" : undefined)
+        array[i] = (i === categoryNumber ? roundNumber : undefined)
     );
 }
 
