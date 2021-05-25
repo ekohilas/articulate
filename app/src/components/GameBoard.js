@@ -33,24 +33,30 @@ export default function GameBoard(props) {
             }, 1000);
         }
         else if (timeLeft == 0 && playStatus == true) {
-            endTurn();
+            // endTurn();
+            setPlayStatus(false);
         }
     }, [timeLeft]);
 
-    const startRound = () => {
-        setPlayStatus(true);
-        console.log(currCards, playStatus);
-        setTimeLeft(20);
-    }
-    const endTurn = () => {
-        setPlayStatus(false);
-        props.gameState.end_turn(); // ends the turn in backend
-        updateTable(categoryTable, props.gameState.teams);
-        setCards([{
-            word: props.gameState.current_word_text,
-            category: props.gameState.current_word_category
-        }])
-    }
+    useEffect(() => {
+        if (playStatus == true) {
+            console.log('starting turn set play status', playStatus)
+            setTimeLeft(20);
+        }
+        // prevent ending turn on first default set
+        else if (playStatus == false && timeLeft != -1) {
+            console.log('ending turn set play status false')
+            props.gameState.end_turn(); // ends the turn in backend
+            updateTable(categoryTable, props.gameState.teams);
+            setCards([{
+                word: props.gameState.current_word_text,
+                category: props.gameState.current_word_category
+            }])
+        }
+        else {
+            console.log('play status changed to ', playStatus);
+        }
+    }, [playStatus]);
 
     const winCard = () => {
         props.gameState.win_word();
@@ -68,7 +74,10 @@ export default function GameBoard(props) {
     }
     const onSwipe = (direction) => {
         // disable if not current in a round
-        // if (playStatus === false) return;
+        console.log('play status', playStatus);
+
+        if (playStatus == false) return;
+        
         console.log('You swiped: ' + direction);
         if (direction === 'left') {
             winCard();
@@ -80,8 +89,7 @@ export default function GameBoard(props) {
 
     const clearTime = () => {
         setTimeLeft(0); // this causes the game to end turn due to useEffect
-        clearTimeout(timer);       
-        setPlayStatus(false);
+        clearTimeout(timer);    
     }
 
     function updateTable(table, teams) {
@@ -120,7 +128,7 @@ export default function GameBoard(props) {
 
             {playStatus === false ?
             <div>
-                <Button onClick={() => startRound()} variant="success">Start Round</Button>
+                <Button onClick={() => setPlayStatus(true)} variant="success">Start Round</Button>
             </div>
             :
             <div>
