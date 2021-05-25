@@ -79,8 +79,9 @@ export default function GameBoard(props) {
     }
 
     const clearTime = () => {
-        clearTimeout(timer);        
         setTimeLeft(0); // this causes the game to end turn due to useEffect
+        clearTimeout(timer);       
+        setPlayStatus(false);
     }
 
     function updateTable(table, teams) {

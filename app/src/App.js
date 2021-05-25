@@ -11,8 +11,6 @@ import Button from 'react-bootstrap/Button';
 
 function App() {
   const [game, setGame] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(-1);
-  const [playStatus, setPlayStatus] = useState(false);
   const [numTeams, setNumTeams] = useState('2');
 
   const radios = [
@@ -20,30 +18,6 @@ function App() {
     { name: '3', value: '3' },
     { name: '4', value: '4' },
   ];
-  var timer;
-
-  useEffect(() => {
-    if (timeLeft > 0) {
-      timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1)
-      }, 1000);
-    }
-    else if (timeLeft == 0 && playStatus == true) {
-      setPlayStatus(false);
-      console.log("i should update table");
-      game.end_turn();
-    }
-  }, [timeLeft]);
-
-  const startRound = () => {
-    setPlayStatus(true);
-    setTimeLeft(5);
-  }
-
-  const endTurn = () => {
-    clearTimeout(timer);
-    setTimeLeft(0); // this causes the game to end turn due to useEffect
-  }
 
   return (
     <div className="App">
@@ -78,7 +52,7 @@ function App() {
           }
 
           {game !== null &&
-            <GameBoard gameState={game} numTeams={numTeams} playStatus={playStatus} timeLeft={timeLeft} startRound={startRound} endTurn={endTurn}></GameBoard>
+            <GameBoard gameState={game} numTeams={numTeams}></GameBoard>
           }
         <pre id='words'>
         </pre>
