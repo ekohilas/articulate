@@ -144,7 +144,7 @@ export class Turn {
         // don't draw if it's the final turn and we've already won a word
         if (
                 this.team.final_turn === true
-                && this.words.get(WordStatus.PLAYED).length >= 0
+                && this.words.get(WordStatus.PLAYED).length > 0
            ) {
             return;
         }
