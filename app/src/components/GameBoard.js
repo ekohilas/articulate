@@ -64,6 +64,10 @@ export default function GameBoard(props) {
             word: props.gameState.current_word_text,
             category: props.gameState.current_word_category
         }])
+
+        if (props.gameState.game_over) {
+            console.log('game over')
+        }
     }
     const deferCard = () => {
         props.gameState.defer_word();
@@ -115,8 +119,11 @@ export default function GameBoard(props) {
                     </div>
                 ))}
             </div> */}
-
+            
+            
             {playStatus === false ?
+            (
+                !props.gameState.game_over && 
             <div className="round-div">
                 <div className="team-round-div">
                     <p className="curr-team-text">{props.gameState.curr_team.name}</p>
@@ -127,20 +134,25 @@ export default function GameBoard(props) {
                     `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : null}
                 </p>
             </div>
+            )
             :
+            (
+                !props.gameState.game_over && 
             <div className="round-view round-div">
                 <h1>{timeLeft}</h1>
 
                 <div className="game-buttons-div">
                     <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
-                    <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>
+                    {!props.gameState.curr_team.final_turn && <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>}
                     {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
                     <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
                 </div>
 
             </div>
+            )
             }
 
+            {!props.gameState.game_over && 
             <div className="card-div">
                 {currCards.map((card) => {
                     return (
@@ -161,10 +173,15 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                 )})}
-            </div>
-            <p className="helper-text">
-                Swipe right if you've won the card and left to pass/skip
-            </p>
+            </div> 
+            }
+
+            {props.gameState.game_over ? 
+                <p> Congratulations! {props.gameState.curr_team.name} has won 🎉! </p> 
+                :
+                <p className="helper-text"> Swipe right if you've won the card and left to pass/skip </p>
+            }
+            
         </div>
     )
 }
