@@ -79,14 +79,14 @@ export default function GameBoard(props) {
     }
 
     const clearTime = () => {
-        clearTimeout(timer);        
+        clearTimeout(timer);
         setTimeLeft(0); // this causes the game to end turn due to useEffect
     }
 
     function updateTable(table, teams) {
         teams.forEach(
             (team, i) =>
-            moveTeam(table, i, team.total_wins % 7)
+            moveTeam(table, i, team.total_wins % 7, Math.floor(team.total_wins / 7))
         )
         console.log("i should be updating table");
         setCategoryTable(table);
@@ -147,9 +147,9 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                 )})}
-                
+
             </div>
-                
+
         </div>
     )
 }
@@ -157,15 +157,15 @@ export default function GameBoard(props) {
 function initialiseTable(numTeams, numCategories) {
     let table = createGrid(numTeams, numCategories);
     table.forEach(
-        row => row[0] = "*"
+        row => row[0] = 0
     );
     return table;
 }
 
-function moveTeam(table, teamNumber, categoryNumber) {
+function moveTeam(table, teamNumber, categoryNumber, roundNumber) {
     table[teamNumber].forEach(
         (value, i, array) =>
-        array[i] = (i === categoryNumber ? "*" : undefined)
+        array[i] = (i === categoryNumber ? roundNumber : undefined)
     );
 }
 
