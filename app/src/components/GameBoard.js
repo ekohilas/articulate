@@ -100,6 +100,32 @@ export default function GameBoard(props) {
         clearTimeout(timer);
     }
 
+    function createTable(tableData) {
+     return (
+      <table>
+       <tbody>
+       {
+        tableData.map(
+            (rowData, i) => {
+              return (
+                <tr className={`${props.gameState.curr_team_num == i ? "active": "inactive"}`}>
+                  {
+                    rowData.map(
+                        (cellData, j) => {
+                      return (
+                        <td className={`cell team-${i} ${Object.keys(categoryColours)[j]}`}
+                        > {cellData} </td>);
+                   })
+                  }
+                </tr>
+            );
+        })
+       }
+      </tbody>
+      </table>
+     )
+    }
+
     function initialiseTable(numTeams, numCategories) {
         let table = createGrid(numTeams, numCategories);
         table.forEach(
@@ -158,24 +184,24 @@ export default function GameBoard(props) {
                     </div>
                 ))}
             </div> */}
-            
+
             {playStatus === false ?
             (
-                !props.gameState.game_over && 
+                !props.gameState.game_over &&
             <div className="round-div">
                 <div className="team-round-div">
-                    <p className="curr-team-text">{props.gameState.curr_team.name}</p>
+                {/*<p className="curr-team-text">{props.gameState.curr_team.name}</p>*/}
                     <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
                 </div>
 
                 <p className="points-update-text"> {props.gameState.turns.length > 1 ?
-                    `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : '20 second rounds'}
+                    `Previous team scored ${props.gameState.get_last_wins()} points` : '20 second rounds'}
                 </p>
             </div>
             )
             :
             (
-                !props.gameState.game_over && 
+                !props.gameState.game_over &&
             <div className="round-view round-div">
                 <h1>{timeLeft}</h1>
 
@@ -190,7 +216,7 @@ export default function GameBoard(props) {
             )
             }
 
-            {!props.gameState.game_over && 
+            {!props.gameState.game_over &&
             <div className="card-div">
                 {currCards.map((card) => {
                     return (
@@ -211,7 +237,7 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                 )})}
-            </div> 
+            </div>
             }
 
             {props.gameState.game_over ?
@@ -222,7 +248,7 @@ export default function GameBoard(props) {
                 :
                 <p className="helper-text"> Swipe right if you've won the card and left to pass/skip </p>
             }
-            
+
         </div>
     )
 }
@@ -239,28 +265,3 @@ function createGrid(numRows, numCols) {
     return rows;
 }
 
-function createTable(tableData) {
- return (
-  <table>
-   <tbody>
-   {
-    tableData.map(
-        (rowData, i) => {
-          return (
-            <tr>
-              {
-                rowData.map(
-                    (cellData, j) => {
-                  return (
-                    <td className={`cell team-${i} ${Object.keys(categoryColours)[j]}`}
-                    > {cellData} </td>);
-               })
-              }
-            </tr>
-        );
-    })
-   }
-  </tbody>
-  </table>
- )
-}

@@ -133,6 +133,10 @@ table {
   border-spacing: 0 3px;
 }
 
+.inactive {
+  filter: brightness(0.75);
+}
+
 .object {
   background-color: #0099DA;
 }

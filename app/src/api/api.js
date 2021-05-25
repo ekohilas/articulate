@@ -280,8 +280,12 @@ export class Game {
         return this.curr_turn.timer;
     }
 
+    get curr_team_num() {
+        return this.curr_turn_num % this.teams.length;
+    }
+
     init_turn() {
-        this.curr_team = this.teams[this.curr_turn_num % this.teams.length];
+        this.curr_team = this.teams[this.curr_team_num];
         this.curr_turn = new Turn(
                 this.curr_team,
                 //redundant?
