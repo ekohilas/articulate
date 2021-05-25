@@ -185,7 +185,6 @@ export class Turn {
     }
 }
 
-
 export class Game {
 
     constructor(
@@ -351,7 +350,20 @@ export class Game {
         const wins = this.curr_turn.wins;
         console.log(`${this.curr_team.name} scored ${wins}`);
         this.curr_team.total_wins += wins;
+    }
+    get_last_wins() {
+        const num_turns = this.turns.length;
+        if (num_turns === 1) return 0;
 
+        const last_turn = this.turns[num_turns - 2];
+        return last_turn.wins;
+    }
+    get_last_team() {
+        const num_turns = this.turns.length;
+        if (num_turns === 1) return null;
+
+        const last_turn = this.turns[num_turns - 2];
+        return last_turn.team.name;
     }
 
     check_end_game() {

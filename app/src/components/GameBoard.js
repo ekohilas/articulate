@@ -51,6 +51,7 @@ export default function GameBoard(props) {
                 word: props.gameState.current_word_text,
                 category: props.gameState.current_word_category
             }])
+
         }
         else {
             console.log('play status changed to ', playStatus);
@@ -107,18 +108,25 @@ export default function GameBoard(props) {
                 {createTable(categoryTable)}
             </div>
 
-            <div className="team-div" >
+            {/* <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
                     <div className="team-header" key={idx}>
                         <p>{team.name} </p>
                         <p>{team.total_wins}</p>
                     </div>
                 ))}
-            </div>
+            </div> */}
 
             {playStatus === false ?
             <div className="round-div">
-                <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
+                <div className="team-round-div">
+                    <p className="curr-team-text">{props.gameState.curr_team.name}</p>
+                    <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
+                </div>
+
+                <p className="points-update-text"> {props.gameState.turns.length > 1 ? 
+                    `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : null}
+                </p>                
             </div>
             :
             <div className="round-view round-div">
@@ -146,7 +154,7 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                         :
-                        <TinderCard onSwipe={console.log('no swipe')} preventSwipe={['up', 'down', 'left', 'right']}>
+                        <TinderCard preventSwipe={['up', 'down', 'left', 'right']}>
                             <div className="card">
                                 <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
                                 <div className="card-word">{card.word}</div>
