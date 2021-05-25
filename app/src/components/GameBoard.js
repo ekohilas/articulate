@@ -161,16 +161,10 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                 )})}
-<<<<<<< HEAD
             </div>
             <p className="helper-text">
                 Swipe right if you've won the card and left to pass/skip
             </p>
-=======
-
-            </div>
-
->>>>>>> board-fixes
         </div>
     )
 }
