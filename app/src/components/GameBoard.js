@@ -99,13 +99,47 @@ export default function GameBoard(props) {
         clearTimeout(timer);
     }
 
+    function initialiseTable(numTeams, numCategories) {
+        let table = createGrid(numTeams, numCategories);
+        table.forEach(
+            row => row[0] = `0/${props.gameState.max_cycles}`
+        );
+        return table;
+    }
+
     function updateTable(table, teams) {
         teams.forEach(
             (team, i) =>
-            moveTeam(table, i, team.total_wins % 7, Math.floor(team.total_wins / 7))
+            team.final_turn
+            ? writeFinal(table, i)
+            : moveTeam(table, i, team.total_wins % 7, Math.floor(team.total_wins / 7))
         )
         setCategoryTable(table);
     }
+
+    function writeFinal(table, teamNumber) {
+        const final_string = "*FINAL*";
+        table[teamNumber].forEach(
+            (value, i, array) =>
+            array[i] = final_string[i]
+        );
+    }
+
+    function moveTeam(table, teamNumber, categoryNumber, roundNumber) {
+        table[teamNumber].forEach(
+            (value, i, array) =>
+            array[i] = (
+                i === categoryNumber
+                ? (
+                    roundNumber === props.gameState.max_cycles
+                    ? "*"
+                    : `${roundNumber}/${props.gameState.max_cycles}`
+                )
+                : undefined
+            )
+        );
+    }
+
 
     return (
         <div className="root">
@@ -190,21 +224,6 @@ export default function GameBoard(props) {
             
         </div>
     )
-}
-
-function initialiseTable(numTeams, numCategories) {
-    let table = createGrid(numTeams, numCategories);
-    table.forEach(
-        row => row[0] = 0
-    );
-    return table;
-}
-
-function moveTeam(table, teamNumber, categoryNumber, roundNumber) {
-    table[teamNumber].forEach(
-        (value, i, array) =>
-        array[i] = (i === categoryNumber ? roundNumber : undefined)
-    );
 }
 
 function createGrid(numRows, numCols) {
