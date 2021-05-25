@@ -22,8 +22,18 @@
 }
 .round-div {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  height: 17vh;
+  height: 15vh;
+  margin-top: 16px;
+  /* border: 2px solid red; */
+}
+.team-round-div {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  justify-content: space-around;
+  width: 70%;
   /* border: 2px solid white; */
 }
 
@@ -86,6 +96,16 @@
   color: #fff4f4;
   /* border: 1px dotted white; */
   /* overflow: hidden; */
+}
+.curr-team-text {
+  font-size: larger;
+  font-weight: 500;
+  margin-top: 16px;
+}
+.points-update-text {
+  font-size: 24px;
+  font-style: italic;
+  margin-top: 8px;
 }
 .helper-text {
   font-size: 24px;
