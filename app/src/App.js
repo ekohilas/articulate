@@ -19,6 +19,10 @@ function App() {
     { name: '3', value: '3' },
     { name: '4', value: '4' },
   ];
+  const restartGame = () => {
+    setGame(main.start_game(words, numTeams));
+    console.log('restarting game');
+  }
 
   return (
     <div className="App">
@@ -57,7 +61,7 @@ function App() {
           }
 
           {game !== null &&
-            <GameBoard gameState={game} numTeams={numTeams}></GameBoard>
+            <GameBoard gameState={game} numTeams={numTeams} restartGame={restartGame}></GameBoard>
           }
         <pre id='words'>
         </pre>

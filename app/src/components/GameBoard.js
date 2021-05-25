@@ -76,6 +76,10 @@ export default function GameBoard(props) {
             category: props.gameState.current_word_category
         }])
     }
+    const restartGame = () => {
+        window.location.reload(false);
+    }
+
     const onSwipe = (direction) => {
         // disable if not current in a round
         console.log('play status', playStatus);
@@ -120,7 +124,6 @@ export default function GameBoard(props) {
                 ))}
             </div> */}
             
-            
             {playStatus === false ?
             (
                 !props.gameState.game_over && 
@@ -131,7 +134,7 @@ export default function GameBoard(props) {
                 </div>
 
                 <p className="points-update-text"> {props.gameState.turns.length > 1 ?
-                    `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : null}
+                    `${props.gameState.get_last_team()} just scored ${props.gameState.get_last_wins()} points` : '20 second rounds'}
                 </p>
             </div>
             )
@@ -147,7 +150,7 @@ export default function GameBoard(props) {
                     {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
                     <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
                 </div>
-
+                <p className="score-text">Current Score {props.gameState.current_team_wins}</p>
             </div>
             )
             }
@@ -176,8 +179,11 @@ export default function GameBoard(props) {
             </div> 
             }
 
-            {props.gameState.game_over ? 
-                <p> Congratulations! {props.gameState.curr_team.name} has won 🎉! </p> 
+            {props.gameState.game_over ?
+                <div>
+                    <p className="helper-text"> Congratulations! {props.gameState.curr_team.name} has won 🎉! </p>
+                    <Button onClick={() => restartGame()} variant="warning">Restart</Button>
+                </div>
                 :
                 <p className="helper-text"> Swipe right if you've won the card and left to pass/skip </p>
             }
