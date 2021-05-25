@@ -96,7 +96,6 @@ export default function GameBoard(props) {
             (team, i) =>
             moveTeam(table, i, team.total_wins % 7)
         )
-        console.log("i should be updating table");
         setCategoryTable(table);
     }
 
