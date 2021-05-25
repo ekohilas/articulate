@@ -36,9 +36,9 @@ export class Category {
     }
 }
 
-export class Categories {
+export class Sections {
 
-    constructor() {
+    constructor(categories, wild_position) {
 
     }
 
@@ -102,7 +102,7 @@ export class Turn {
                 Object.values(WordStatus).map(status => [status, []])
                 );
         this.status = PlayStatus.PREPARING;
-        this.timer = DEFAULT_TIMER_SECONDS;
+        //this.timer = DEFAULT_TIMER_SECONDS;
         this.categories = categories;
 
         this._draw_word();
@@ -174,9 +174,9 @@ export class Turn {
     win_word(word) {
         this._release_and_draw(WordStatus.PLAYED, word);
 
-        if (this.team.final_turn === true) {
-            this.timer = 0;
-        }
+        //if (this.team.final_turn === true) {
+        //    this.timer = 0;
+        //}
 
     }
 
@@ -284,7 +284,7 @@ export class Game {
                 this.categories
                 );
         this.turns.push(this.curr_turn);
-        this.show_words();
+        // this.show_words();
     }
 
     show_words() {
@@ -310,14 +310,14 @@ export class Game {
 
     start_turn() {
         this.curr_turn.status = PlayStatus.PLAYING;
-        this.interval = window.setInterval( () => this.tick_timer() , 1 * SECOND_IN_MILLISECONDS);
+        //this.interval = window.setInterval( () => this.tick_timer() , 1 * SECOND_IN_MILLISECONDS);
         //this.interval = window.setInterval(function() { this.tick_timer.bind(this) }, 1 * SECOND_IN_MILLISECONDS);
         //window.setInterval(this.end, DEFAULT_TIMER_SECONDS * SECOND_IN_MILLISECONDS);
     }
 
     end_turn() {
         console.log("Times up!");
-        this.curr_turn.timer = 0;
+        //this.curr_turn.timer = 0;
         this.curr_turn.status = PlayStatus.ENDED;
         this.update_team_wins();
 
@@ -333,17 +333,18 @@ export class Game {
 
     discard_word() {
         this.curr_turn.discard_word();
-        this.show_words();
+        // this.show_words();
     }
 
     win_word() {
+        console.log('clicked win')
         this.curr_turn.win_word();
-        this.show_words();
+        // this.show_words();
     }
 
     defer_word() {
         this.curr_turn.defer_word();
-        this.show_words();
+        // this.show_words();
     }
 
     update_team_wins() {
@@ -388,6 +389,44 @@ export class Game {
 
     create_position_table() {
         return util.create_table(this.teams.length, this.max_cycles);
+    }
+
+    get current_word() {
+        if (this.curr_turn == null) {
+            return undefined;
+        } else {
+            return this.curr_turn.words.get(WordStatus.HOLDING)[0];
+        }
+    }
+
+    get current_word_text() {
+        const word = this.current_word;
+        if (word == null) {
+            return undefined;
+        } else {
+            return word.word;
+        }
+    }
+
+    get current_word_category() {
+        const word = this.current_word;
+        if (word == null) {
+            return undefined;
+        } else {
+            return word.category.name;
+        }
+    }
+
+    get segment_names() {
+        if (this.segments == null) {
+            return undefined;
+        } else {
+            return this.segments.map(category => category.name);
+        }
+    }
+
+    get current_team_wins() {
+        return this.curr_turn.wins;
     }
 
 }
