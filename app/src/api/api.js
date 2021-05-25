@@ -178,15 +178,15 @@ export class Turn {
         this._draw_word();
     }
 
-    discard_word(word) {
+    discard_word(word = undefined) {
         this._release_and_draw(WordStatus.DISCARDED, word);
     }
 
-    win_word(word) {
+    win_word(word = undefined) {
         this._release_and_draw(WordStatus.PLAYED, word);
     }
 
-    defer_word(word) {
+    defer_word(word = undefined) {
         // TODO: allow defering on the final turn?
         this._release_and_draw(WordStatus.DEFERED, word);
     }
@@ -389,11 +389,11 @@ export class Game {
     }
 
     update_team() {
-        this.curr_team.curr_category = this.calculate_category(this.curr_team.total_wins);
-
-        if (this.calculate_cycle(this.curr_team.wins) >= this.max_cycles) {
+        if (this.calculate_cycle(this.curr_team.total_wins) >= this.max_cycles) {
             this.curr_team.final_turn = true;
             this.curr_team.curr_category = this.wild_category;
+        } else {
+            this.curr_team.curr_category = this.calculate_category(this.curr_team.total_wins);
         }
     }
 
