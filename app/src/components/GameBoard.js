@@ -75,8 +75,7 @@ export default function GameBoard(props) {
     const onSwipe = (direction) => {
         // disable if not current in a round
         console.log('play status', playStatus);
-
-        if (playStatus == false) return;
+        // if (playStatus == false) return;
         
         console.log('You swiped: ' + direction);
         if (direction === 'left') {
@@ -144,10 +143,10 @@ export default function GameBoard(props) {
             </div>
             }
 
-
             <div>
                 {currCards.map((card) => {
                     return (
+                        playStatus === true ?
                         <TinderCard onSwipe={onSwipe} key={card.word} preventSwipe={['up', 'down', 'left', 'right']}>
                             <div className="card">
                                 <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
@@ -155,8 +154,15 @@ export default function GameBoard(props) {
                                 <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
                             </div>
                         </TinderCard>
+                        :
+                        <TinderCard onSwipe={console.log('no swipe')} preventSwipe={['up', 'down', 'left', 'right']}>
+                            <div className="card">
+                                <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                <div className="card-word">{card.word}</div>
+                                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                            </div>
+                        </TinderCard>
                 )})}
-                
             </div>
                 
         </div>
