@@ -201,23 +201,20 @@ function createTable(tableData) {
   <table>
    <tbody>
    {
-    tableData.map(rowData => {
-      return (
-        <tr>
-          {
-           rowData.map((cellData, i) => {
-              return (
-                <td
-                    style={{
-                        backgroundColor: Object.values(categoryColours)[i],
-                        width: "50px",
-                        height: "50px",
-                    }}
-                > {cellData} </td>);
-           })
-          }
-        </tr>
-    );
+    tableData.map(
+        (rowData, i) => {
+          return (
+            <tr>
+              {
+                rowData.map(
+                    (cellData, j) => {
+                  return (
+                    <td className={`cell team-${i} ${Object.keys(categoryColours)[j]}`}
+                    > {cellData} </td>);
+               })
+              }
+            </tr>
+        );
     })
    }
   </tbody>
