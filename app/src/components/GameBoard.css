@@ -122,6 +122,11 @@
   width: 50px;
 }
 
+table {
+  border-collapse: separate;
+  border-spacing: 0 3px;
+}
+
 .object {
   background-color: #0099DA;
 }
