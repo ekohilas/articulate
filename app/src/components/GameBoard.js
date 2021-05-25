@@ -7,7 +7,7 @@ import TinderCard from 'react-tinder-card'
 const categoryColours = {
     'object': '#0099DA',
     'action': '#F37027',
-    'wild': '#BB99DA',
+    'wild': '#FFFFFF',
     'world': '#016FA5',
     'person': '#FFCB04',
     'random': '#ED1C24',
