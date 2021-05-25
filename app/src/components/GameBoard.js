@@ -83,13 +83,14 @@ export default function GameBoard(props) {
     const onSwipe = (direction) => {
         // disable if not current in a round
         console.log('play status', playStatus);
-        // if (playStatus == false) return;
+        // if (props.gameState.curr_team.final_turn) return;
 
         console.log('You swiped: ' + direction);
         if (direction === 'right') {
             winCard();
         }
-        if (direction === 'left') {
+        // cannot defer if final turn
+        if (direction === 'left' && !props.gameState.curr_team.final_turn) {
             deferCard();
         }
     }
