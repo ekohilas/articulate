@@ -41,16 +41,16 @@ export default function GameBoard(props) {
 
     useEffect(() => {
         if (playStatus == true) {
-            // console.log('starting turn set play status', playStatus)
-            setTimeLeft(30);
+            // unlimited time on final turn
+            if (!props.gameState.curr_team.final_turn) {
+                setTimeLeft(30);
+            }
         }
         // prevent ending turn on first default set
         else if (playStatus == false && timeLeft != -1) {
             props.gameState.end_turn(); // ends the turn in backend
             updateTable(categoryTable, props.gameState.teams);
             setTurnStatus(false);
-
-
         }
         else {
             console.log('play status changed to ', playStatus);
@@ -228,15 +228,15 @@ export default function GameBoard(props) {
             {!props.gameState.game_over && (
                 playStatus === true && turnStatus === true ? 
                     <div className="round-view round-div">
-                        <p className="timer-text">{timeLeft}</p>
-                        <p className="score-text">Current Score {props.gameState.current_team_wins}</p>
+                        <p className="timer-text">{props.gameState.curr_team.final_turn ? '∞': timeLeft}</p>
+                        <p className="score-text">{props.gameState.curr_team.final_turn ? 'Anybody can answer': `Current Score ${props.gameState.current_team_wins}`}</p>
                     </div>
                 :
                 turnStatus === true ?
                     <div className="round-div">
                         <div className="team-round-div">
                             <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
-                            <p className="timer-info-text">30 second rounds</p>
+                            <p className="info-text">{props.gameState.curr_team.final_turn ? 'Final round - unlimited time' : '30 second rounds'}</p>
                         </div>
                     </div>
                 :
