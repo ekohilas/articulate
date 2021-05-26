@@ -54,7 +54,7 @@
 }
 .game-buttons-div {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   width: 90%;
   align-self: center;
   margin-top: 7%;
