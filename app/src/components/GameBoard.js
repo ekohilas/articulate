@@ -108,7 +108,7 @@ export default function GameBoard(props) {
 
     const onReadyTurn = (direction) => {
         if (direction === 'right') {
-            setTurnStatus(true);
+            startTurn();
         }
     }
 
