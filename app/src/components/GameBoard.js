@@ -277,14 +277,14 @@ export default function GameBoard(props) {
                             </div>
                         </TinderCard>
                         :
-                        <div>
-                        <TinderCard preventSwipe={['up', 'down', 'left', 'right']}>
-                            <div className="card">
-                                <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
-                                <div className="card-word">{card.word}</div>
-                                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
-                            </div>
-                        </TinderCard>
+                        <div className="card-game-div">
+                            <TinderCard preventSwipe={['up', 'down', 'left', 'right']}>
+                                <div className="card">
+                                    <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                    <div className="card-word">{card.word}</div>
+                                    <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                </div>
+                            </TinderCard>
                             <div className="game-buttons-div">
                                 <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
                             </div>
