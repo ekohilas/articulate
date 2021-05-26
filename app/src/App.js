@@ -28,7 +28,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         {/* <img src={articulate} className="App-logo" alt="logo" /> */}
-      
+
           {game === null &&
 
           <div className="game-options">
@@ -52,9 +52,9 @@ function App() {
                 </ToggleButton>
               ))}
             </ButtonGroup>
-            
+
             <Button variant="primary" className="create-button" onClick={() => {
-              setGame(main.start_game(words, numTeams));
+              setGame(main.start_game(words, numTeams, 6));
             }}> Create Game </Button>
 
           </div>

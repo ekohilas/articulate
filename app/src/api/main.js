@@ -41,10 +41,10 @@ function create_test_teams(num_teams) {
     return teams;
 }
 
-export function start_game(json_deck, num_teams) {
+export function start_game(json_deck, num_teams, max_rounds) {
 
     const teams = create_test_teams(num_teams);
-    const game = new api.Game(teams, json_deck);
+    const game = new api.Game(teams, json_deck, max_rounds);
 
     // let button = document.getElementById("start");
     // button.style.display = "none";
