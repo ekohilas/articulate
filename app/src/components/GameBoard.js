@@ -3,6 +3,12 @@ import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
 import { useState, useEffect, useCallback } from "react";
 import TinderCard from 'react-tinder-card'
+import {
+    CircularProgressbar,
+    CircularProgressbarWithChildren,
+    buildStyles
+} from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 const categoryColours = {
     'object': '#0099DA',
@@ -140,7 +146,7 @@ export default function GameBoard(props) {
     function initialiseTable(numTeams, numCategories) {
         let table = createGrid(numTeams, numCategories);
         table.forEach(
-            row => row[0] = `0/${props.gameState.max_cycles}`
+            row => row[0] = buildCounter(0, props.gameState.max_cycles)
         );
         return table;
     }
@@ -171,7 +177,9 @@ export default function GameBoard(props) {
                 ? (
                     roundNumber === props.gameState.max_cycles
                     ? "*"
-                    : `${roundNumber}/${props.gameState.max_cycles}`
+                    //: `${roundNumber}/${props.gameState.max_cycles}`
+                    : buildCounter(roundNumber, props.gameState.max_cycles)
+
                 )
                 : undefined
             )
@@ -207,6 +215,30 @@ export default function GameBoard(props) {
             document.removeEventListener("keydown", handleKeyPress, false);
         };
     }, []);
+
+    function buildCounter(current, max) {
+        return (
+            <div className="player">
+                <CircularProgressbarWithChildren
+                    styles={buildStyles({
+                        pathColor: "white"
+                    })}
+                >
+                    <CircularProgressbar
+                        minValue={0}
+                        maxValue={max}
+                        value={current}
+                        strokeWidth={50}
+                        styles={buildStyles({
+                            strokeLinecap: "butt",
+                            pathColor: "white",
+                            trailColor: "transparent"
+                        })}
+                    />
+                </CircularProgressbarWithChildren>
+            </div>
+        )
+    }
 
     return (
         <div className="root">

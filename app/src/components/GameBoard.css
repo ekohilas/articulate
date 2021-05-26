@@ -16,6 +16,7 @@
   /* border: 2px solid white; */
 }
 
+
 .start-button {
   align-self: center;
 }
@@ -171,7 +172,16 @@
   border-radius: 0px 0px 56px 56px;
 }
 
+.player {
+  display: inline-block;
+  width: 80%;
+  height: 80%;
+}
+
 .cell {
+  vertical-align: middle;
+  text-align: center;
+  display: table-cell;
   height: 50px;
   width: 50px;
 }
