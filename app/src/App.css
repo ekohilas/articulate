@@ -21,7 +21,8 @@
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  /* justify-content: center; */
+  justify-content: center;
+  /* border: 2px aliceblue solid; */
 }
 
 .App-link {
@@ -31,11 +32,14 @@
 .game-options {
   display: flex;
   flex-direction: column;
-  margin-top: 55%;
+  /* margin-top: 55%; */
   /* border: 2px aliceblue solid; */
 }
 .create-button {
   margin-top: 48px;
+}
+.footer-text {
+  margin-top: 10vh;
 }
 .team-size {
   padding: 0 20px;

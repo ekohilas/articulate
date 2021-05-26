@@ -262,16 +262,14 @@ export default function GameBoard(props) {
             </div> */}
             {!props.gameState.game_over && (
                 playStatus === true && turnStatus === true ?
-                    <div className="round-view round-div">
+                    <div className="round-div">
                         <p className="timer-text">{props.gameState.curr_team.final_turn ? '∞': timeLeft}</p>
                         <p className="score-text">{props.gameState.curr_team.final_turn ? 'Anybody can answer': `Current Score ${props.gameState.current_team_wins}`}</p>
                     </div>
                 :
                 turnStatus === true ?
                     <div className="round-div">
-                        <div className="team-round-div">
-                            <p className="info-text">{props.gameState.curr_team.final_turn ? 'Final round - unlimited time' : '30 second rounds'}</p>
-                        </div>
+                        <p className="info-text">{props.gameState.curr_team.final_turn ? 'Final round - unlimited time' : '30 second rounds'}</p>
                     </div>
                 :
                 <p className="points-update-text"> {props.gameState.turns.length === 1 ?
@@ -306,9 +304,9 @@ export default function GameBoard(props) {
                         turnStatus === false ?
                         <TinderCard onSwipe={onReadyTurn} key={'ready'} preventSwipe={['up', 'down', 'left', 'right']}>
                             <div className="card-pending">
-                                <div className="card-category border-top" style={{backgroundColor: 'grey'}}>*waiting*</div>
+                                <div className="card-category border-top" style={{backgroundColor: 'grey'}}>pending</div>
                                 <div className="card-word-ready">Swipe right to win card,<br/>swipe left to pass</div>
-                                <div className="card-category border-bottom" style={{backgroundColor: 'grey'}}>*waiting*</div>
+                                <div className="card-category border-bottom" style={{backgroundColor: 'grey'}}>pending</div>
                             </div>
                         </TinderCard>
                         :
@@ -321,7 +319,7 @@ export default function GameBoard(props) {
                                 </div>
                             </TinderCard>
                             <div className="game-buttons-div">
-                                <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
+                                <Button variant="success" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
                             </div>
                         </div>
                 )})}

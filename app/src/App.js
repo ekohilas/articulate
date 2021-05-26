@@ -32,6 +32,9 @@ function App() {
           {game === null &&
 
           <div className="game-options">
+            
+            <h1>Articulate</h1>
+            <br></br>
             <div>
               Number of Teams
             </div>
@@ -53,10 +56,11 @@ function App() {
               ))}
             </ButtonGroup>
 
-            <Button variant="primary" className="create-button" onClick={() => {
+            <Button variant="primary" className="create-button" size="lg" onClick={() => {
               setGame(main.start_game(words, numTeams, 6));
             }}> Create Game </Button>
 
+            <footer className="footer-text">Made with ❤️ by Evan and Victor</footer>
           </div>
           }
 
