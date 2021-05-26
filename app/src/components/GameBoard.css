@@ -4,7 +4,7 @@
 .board {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  /* margin-top: 24px; */
 }
 .team-div {
   display: flex;
@@ -69,7 +69,7 @@
   border-radius: 56px;
 
   width: 300px;
-  height: 360px;
+  height: 40vh;
 }
 
 .card-word {

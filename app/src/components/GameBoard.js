@@ -170,11 +170,13 @@ export default function GameBoard(props) {
 
     return (
         <div className="root">
-            <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button>
+            {/* <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button> */}
 
+            {!playStatus && 
             <div className="board">
                 {createTable(categoryTable)}
-            </div>
+            </div> 
+            }
 
             {/* <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
