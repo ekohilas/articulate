@@ -42,7 +42,7 @@ export default function GameBoard(props) {
     useEffect(() => {
         if (playStatus == true) {
             // console.log('starting turn set play status', playStatus)
-            setTimeLeft(20);
+            setTimeLeft(30);
         }
         // prevent ending turn on first default set
         else if (playStatus == false && timeLeft != -1) {
@@ -102,7 +102,6 @@ export default function GameBoard(props) {
 
     const onReadyTurn = (direction) => {
         if (direction === 'right') {
-            console.log('swiped')
             setTurnStatus(true);
         }
     }
@@ -184,7 +183,7 @@ export default function GameBoard(props) {
         <div className="root">
             {/* <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button> */}
 
-            {(!playStatus || props.gameState.game_over) && 
+            {(turnStatus === false || props.gameState.game_over) && 
             <div className="board">
                 {createTable(categoryTable)}
             </div> 
@@ -198,59 +197,82 @@ export default function GameBoard(props) {
                     </div>
                 ))}
             </div> */}
-
-            {playStatus === false ?
-            (
-                !props.gameState.game_over &&
-            <div className="round-div">
-                <div className="team-round-div">
-                {/*<p className="curr-team-text">{props.gameState.curr_team.name}</p>*/}
-                    
-                    {turnStatus ? 
-                    <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
+            {!props.gameState.game_over && (
+                playStatus === true && turnStatus === true ? 
+                    <div className="round-view round-div">
+                        <p className="timer-text">{timeLeft}</p>
+                        <p className="score-text">Current Score {props.gameState.current_team_wins}</p>
+                    </div>
+                :
+                turnStatus === true ?
+                    <div className="round-div">
+                        <div className="team-round-div">
+                            <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
+                            <p className="timer-info-text">30 second rounds</p>
+                        </div>
+                    </div>
+                :
+                <p className="points-update-text"> {props.gameState.turns.length === 1 ?
+                    `${props.gameState.curr_team.name} get ready`
                     :
-                    <Button variant="primary" className="start-button" size="lg" onClick={() => startTurn()}>Start Turn</Button>
+                    `Previous team scored ${props.gameState.get_last_wins()} points` 
                     }
-                </div>
-
-                <p className="points-update-text"> {props.gameState.turns.length > 1 ?
-                    `Previous team scored ${props.gameState.get_last_wins()} points` : '20 second rounds'}
                 </p>
-            </div>
+            )}
+            {/* {playStatus === false ?
+            (!props.gameState.game_over &&
+                <div className="round-div">
+                    {turnStatus && 
+                    <div className="team-round-div">
+                        <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
+                        <p className="points-update-text">30 second rounds</p>
+                    </div>
+                    }
+
+                    <p className="points-update-text"> {props.gameState.turns.length === 1 && turnStatus === false ?
+                        `${props.gameState.curr_team.name} get ready`
+                        :
+                        turnStatus === true ?
+                        null :
+                        `Previous team scored ${props.gameState.get_last_wins()} points` 
+                        }
+                    </p>
+                </div>
             )
             :
             (
                 !props.gameState.game_over &&
             <div className="round-view round-div">
                 <p className="timer-text">{timeLeft}</p>
-
-                <div className="game-buttons-div">
-                    <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
-                    {!props.gameState.curr_team.final_turn && <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>}
-                    {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
-                    <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
-                </div>
                 <p className="score-text">Current Score {props.gameState.current_team_wins}</p>
             </div>
             )
-            }
+            } */}
 
             {!props.gameState.game_over &&
             <div className="card-div">
                 {currCards.map((card) => {
                     return (
                         playStatus === true && turnStatus === true ?
-                        <TinderCard onSwipe={onSwipe} key={card.word} preventSwipe={['up', 'down', 'left', 'right']}>
-                            <div className="card">
-                                <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
-                                <div className="card-word">{card.word}</div>
-                                <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                        <div className="card-game-div">
+                            <TinderCard onSwipe={onSwipe} key={card.word} preventSwipe={['up', 'down', 'left', 'right']}>
+                                <div className="card">
+                                    <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                    <div className="card-word">{card.word}</div>
+                                    <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                                </div>
+                            </TinderCard>
+                            <div className="game-buttons-div">
+                                <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
+                                {!props.gameState.curr_team.final_turn && <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>}
+                                {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
+                                <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
                             </div>
-                        </TinderCard>
+                        </div>
                         :
                         turnStatus === false ?
                         <TinderCard onSwipe={onReadyTurn} key={'ready'} preventSwipe={['up', 'down', 'left', 'right']}>
-                            <div className="card">
+                            <div className="card-pending">
                                 <div className="card-category border-top" style={{backgroundColor: 'grey'}}>*waiting*</div>
                                 <div className="card-word-ready">Swipe right to win card, left to pass</div>
                                 <div className="card-category border-bottom" style={{backgroundColor: 'grey'}}>*waiting*</div>
@@ -269,8 +291,9 @@ export default function GameBoard(props) {
             }
 
             {props.gameState.game_over ?
-                <div>
-                    <p className="helper-text"> Congratulations! {props.gameState.curr_team.name} has won 🎉! </p>
+                <div className="finish-div">
+                    <p className="helper-text">🎉 Congratulations 🎉</p> 
+                    <p className="helper-text"> {props.gameState.curr_team.name} has won! </p>
                     <Button onClick={() => restartGame()} variant="warning">Restart</Button>
                 </div>
                 :
