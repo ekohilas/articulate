@@ -1,7 +1,7 @@
 
 import './GameBoard.css';
 import Button from 'react-bootstrap/Button';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TinderCard from 'react-tinder-card'
 
 const categoryColours = {
@@ -50,7 +50,7 @@ export default function GameBoard(props) {
             updateTable(categoryTable, props.gameState.teams);
             setTurnStatus(false);
 
-            
+
         }
         else {
             console.log('play status changed to ', playStatus);
@@ -178,6 +178,35 @@ export default function GameBoard(props) {
         );
     }
 
+    const handleKeyPress = useCallback((event) => {
+        switch (event.key) {
+            case "d":
+                console.log(props.gameState);
+                break;
+            case "ArrowRight":
+                winCard();
+                break;
+            case "ArrowLeft":
+                deferCard();
+                break;
+            case "ArrowDown":
+                clearTime();
+                break;
+            case "ArrowUp":
+                setPlayStatus(true);
+                break;
+            default:
+                console.log(`${event.key} was pressed`);
+        }
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyPress, false);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress, false);
+        };
+    }, []);
 
     return (
         <div className="root">
@@ -186,9 +215,8 @@ export default function GameBoard(props) {
             {(turnStatus === false || props.gameState.game_over) && 
             <div className="board">
                 {createTable(categoryTable)}
-            </div> 
+            </div>
             }
-
             {/* <div className="team-div" >
                 {props.gameState.teams.map((team, idx) => (
                     <div className="team-header" key={idx}>
@@ -219,35 +247,6 @@ export default function GameBoard(props) {
                     }
                 </p>
             )}
-            {/* {playStatus === false ?
-            (!props.gameState.game_over &&
-                <div className="round-div">
-                    {turnStatus && 
-                    <div className="team-round-div">
-                        <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
-                        <p className="points-update-text">30 second rounds</p>
-                    </div>
-                    }
-
-                    <p className="points-update-text"> {props.gameState.turns.length === 1 && turnStatus === false ?
-                        `${props.gameState.curr_team.name} get ready`
-                        :
-                        turnStatus === true ?
-                        null :
-                        `Previous team scored ${props.gameState.get_last_wins()} points` 
-                        }
-                    </p>
-                </div>
-            )
-            :
-            (
-                !props.gameState.game_over &&
-            <div className="round-view round-div">
-                <p className="timer-text">{timeLeft}</p>
-                <p className="score-text">Current Score {props.gameState.current_team_wins}</p>
-            </div>
-            )
-            } */}
 
             {!props.gameState.game_over &&
             <div className="card-div">
