@@ -261,10 +261,10 @@ export default function GameBoard(props) {
                                 </div>
                             </TinderCard>
                             <div className="game-buttons-div">
-                                <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
                                 {!props.gameState.curr_team.final_turn && <Button id='defer' className="game-button" onClick={() => deferCard()} variant="secondary">Skip</Button>}
                                 {/* <button id='discard' onClick={() => game.discard_word()} >Discard</button> */}
                                 <Button id='end' className="game-button" onClick={() => clearTime()} variant="danger">End</Button>
+                                <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
                             </div>
                         </div>
                         :
