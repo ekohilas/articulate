@@ -48,7 +48,10 @@ export default function GameBoard(props) {
     useEffect(() => {
         if (playStatus == true) {
             // unlimited time on final turn
-            if (!props.gameState.curr_team.final_turn) {
+            if (props.gameState.curr_team.final_turn) {
+                setTimeLeft(9999)
+            }
+            else {
                 setTimeLeft(30);
             }
         }
