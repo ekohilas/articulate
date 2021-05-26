@@ -28,7 +28,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         {/* <img src={articulate} className="App-logo" alt="logo" /> */}
-
+      
           {game === null &&
 
           <div className="game-options">
@@ -63,8 +63,6 @@ function App() {
           {game !== null &&
             <GameBoard gameState={game} numTeams={numTeams} restartGame={restartGame}></GameBoard>
           }
-        <pre id='words'>
-        </pre>
       </header>
     </div>
   );

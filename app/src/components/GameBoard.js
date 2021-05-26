@@ -21,6 +21,7 @@ export default function GameBoard(props) {
         category: props.gameState.current_word_category
     }])
     const [timeLeft, setTimeLeft] = useState(-1);
+    const [turnStatus, setTurnStatus] = useState(false);
     const [playStatus, setPlayStatus] = useState(false);
     const [categoryTable, setCategoryTable] = useState(initialiseTable(props.numTeams, 7));
 
@@ -47,17 +48,22 @@ export default function GameBoard(props) {
         else if (playStatus == false && timeLeft != -1) {
             props.gameState.end_turn(); // ends the turn in backend
             updateTable(categoryTable, props.gameState.teams);
-            setCards([{
-                word: props.gameState.current_word_text,
-                category: props.gameState.current_word_category
-            }])
+            setTurnStatus(false);
 
+            
         }
         else {
             console.log('play status changed to ', playStatus);
         }
     }, [playStatus]);
 
+    const startTurn = () => {
+        setTurnStatus(true);
+        setCards([{
+            word: props.gameState.current_word_text,
+            category: props.gameState.current_word_category
+        }])
+    }
     const winCard = () => {
         props.gameState.win_word();
         setCards([{
@@ -85,13 +91,19 @@ export default function GameBoard(props) {
         console.log('play status', playStatus);
         // if (props.gameState.curr_team.final_turn) return;
 
-        console.log('You swiped: ' + direction);
         if (direction === 'right') {
             winCard();
         }
         // cannot defer if final turn
         if (direction === 'left' && !props.gameState.curr_team.final_turn) {
             deferCard();
+        }
+    }
+
+    const onReadyTurn = (direction) => {
+        if (direction === 'right') {
+            console.log('swiped')
+            setTurnStatus(true);
         }
     }
 
@@ -172,7 +184,7 @@ export default function GameBoard(props) {
         <div className="root">
             {/* <Button onClick={() => console.log(props.gameState)} variant="warning">Print Game State</Button> */}
 
-            {!playStatus && 
+            {(!playStatus || props.gameState.game_over) && 
             <div className="board">
                 {createTable(categoryTable)}
             </div> 
@@ -193,7 +205,12 @@ export default function GameBoard(props) {
             <div className="round-div">
                 <div className="team-round-div">
                 {/*<p className="curr-team-text">{props.gameState.curr_team.name}</p>*/}
-                    <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Round</Button>
+                    
+                    {turnStatus ? 
+                    <Button variant="primary" className="start-button" size="lg" onClick={() => setPlayStatus(true)}>Start Timer</Button>
+                    :
+                    <Button variant="primary" className="start-button" size="lg" onClick={() => startTurn()}>Start Turn</Button>
+                    }
                 </div>
 
                 <p className="points-update-text"> {props.gameState.turns.length > 1 ?
@@ -205,7 +222,7 @@ export default function GameBoard(props) {
             (
                 !props.gameState.game_over &&
             <div className="round-view round-div">
-                <h1>{timeLeft}</h1>
+                <p className="timer-text">{timeLeft}</p>
 
                 <div className="game-buttons-div">
                     <Button id='win' className="game-button" onClick={() => winCard()} variant="success">Win</Button>
@@ -222,12 +239,21 @@ export default function GameBoard(props) {
             <div className="card-div">
                 {currCards.map((card) => {
                     return (
-                        playStatus === true ?
+                        playStatus === true && turnStatus === true ?
                         <TinderCard onSwipe={onSwipe} key={card.word} preventSwipe={['up', 'down', 'left', 'right']}>
                             <div className="card">
                                 <div className="card-category border-top" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
                                 <div className="card-word">{card.word}</div>
                                 <div className="card-category border-bottom" style={{backgroundColor: categoryColours[card.category]}}>{card.category}</div>
+                            </div>
+                        </TinderCard>
+                        :
+                        turnStatus === false ?
+                        <TinderCard onSwipe={onReadyTurn} key={'ready'} preventSwipe={['up', 'down', 'left', 'right']}>
+                            <div className="card">
+                                <div className="card-category border-top" style={{backgroundColor: 'grey'}}>*waiting*</div>
+                                <div className="card-word-ready">Swipe right to win card, left to pass</div>
+                                <div className="card-category border-bottom" style={{backgroundColor: 'grey'}}>*waiting*</div>
                             </div>
                         </TinderCard>
                         :
@@ -248,7 +274,8 @@ export default function GameBoard(props) {
                     <Button onClick={() => restartGame()} variant="warning">Restart</Button>
                 </div>
                 :
-                <p className="helper-text"> Swipe right if you've won the card and left to pass/skip </p>
+                null
+                // <p className="helper-text"> Swipe right if you've won the card and left to pass/skip </p>
             }
 
         </div>
